@@ -100,6 +100,44 @@ class UserProviderImpl extends UserProvider {
     return UserDetailsImpl(1, 'tester', '1@web.de', '123456', []);
   }
   
+```
+  
+``` dart
+class UserDetailsImpl extends UserDetails {
+  UserDetailsImpl(id, String username, String email, String password,
+      Iterable<Object> authorities)
+      : super(id, username, email, password, authorities);
+
+  @override
+  UserDetails fromJson(Map<String, dynamic> map) {
+    // TODO: implement fromJson
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isAccountNonExpired() {
+    // TODO: implement isAccountNonExpired
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isAccountNonLocked() {
+    // TODO: implement isAccountNonLocked
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isCredentialsNonExpired() {
+    // TODO: implement isCredentialsNonExpired
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isEnabled() {
+    // TODO: implement isEnabled
+    throw UnimplementedError();
+  }
+}
   
 ```
   
