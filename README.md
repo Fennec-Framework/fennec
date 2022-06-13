@@ -82,7 +82,7 @@ higher Priority will be first executed.
 
 ## UserProvider
   
-UserProvider is an interface that contains the function loadUser based and the request data and Roles used on the ** AuthorizatedRoute **
+UserProvider is an interface that contains the function loadUser based and the request data and Roles used on the **AuthorizatedRoute**
   
 Example of implementation of **UserProvider**
   
