@@ -84,7 +84,7 @@ higher Priority will be first executed.
   
 UserProvider is an interface that contains the function loadUser based and the request data and Roles used on the ** AuthorizatedRoute **
   
-Example of implementation of ** UserProvider **
+Example of implementation of **UserProvider**
   
 ``` dart
 class UserProviderImpl extends UserProvider {
@@ -138,8 +138,32 @@ class UserDetailsImpl extends UserDetails {
     throw UnimplementedError();
   }
 }
+```
+  
+  
+## WebSocket
+ 
+WebSocket is already integrated in the core of Framework.
+  
+how to use it :
+  
+``` dart
+  
+WebSocketHandler webSocketHandler = WebSocketHandler();
+webSocketHandler.registerWebSocketHandler(server);
+webSocketHandler.clientsListener.stream.listen((event) {
+    if (event.headers!.value('token') != null) {
+      webSocketHandler.addClient(event);
+    } else {
+      event.webSocket.addError('not allowed');
+    }
+  });
+//Send data to all registred Clients
+webSocketHandler.sendToAllJson({'key': 'value'});
   
 ```
+  
+
   
   
 ## Start your Server and test your first Request
