@@ -13,8 +13,9 @@ void main(List<String> arguments) async {
   print('Welcome to Fennec');
   Application application = Application('0.0.0.0', 8080);
   print(path.join(path.current, '../example/views'));
-  application.setRootPath(
-      '/Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec/example/views');
+  application.set('cache', true);
+  /*application.setRootPath(
+      '/Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec/example/views');*/
 
   application.set('views',
       '/Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec/example/views');

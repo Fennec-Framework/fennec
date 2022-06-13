@@ -14,7 +14,6 @@ class _AppSettings {
   }) : viewsPath = viewsPath ?? path.absolute('views');
 }
 
-///
 class Application {
   late dynamic host;
   late int port;
@@ -93,8 +92,8 @@ class Application {
     if (view == null) {
       view = View(fileName, _instance._engines,
           defaultEngine: _instance._settings.viewEngine,
-          rootPath: _instance.rootPath);
-      print(view.filePath);
+          rootPath: _instance.rootPath ?? _instance._settings.viewsPath);
+
       if (view.filePath == null) {
         late String dirs;
         if (view.rootPath is List) {

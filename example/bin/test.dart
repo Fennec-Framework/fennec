@@ -24,7 +24,7 @@ class MiddlewareHanlderImpl extends MiddlwareHandler<MiddlewareHanlderImpl> {
   const MiddlewareHanlderImpl();
   @Middleware(priority: 0)
   Future<MiddleWareResponse> test(Request request, Response response) async {
-    if (1 == 2) {
+    if (1 == 1) {
       return MiddleWareResponse(MiddleWareResponseEnum.next);
     }
     response.badRequest().send('not allowed second');
@@ -33,7 +33,7 @@ class MiddlewareHanlderImpl extends MiddlwareHandler<MiddlewareHanlderImpl> {
 
   @Middleware(priority: 1)
   Future<MiddleWareResponse> test1(Request request, Response response) async {
-    if (1 == 2) {
+    if (1 == 1) {
       return MiddleWareResponse(MiddleWareResponseEnum.next);
     }
     response.badRequest().send('not allowed first ');
