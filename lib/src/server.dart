@@ -29,11 +29,8 @@ class Server {
       ? throw Exception("you should start first")
       : _instance._httpServer!;
   Future<ServerInfo> startServer() async {
-    Stopwatch stopwatch = Stopwatch()..start();
-
     _registerRoutes();
-
-    print('doSomething() executed in ${stopwatch.elapsed.inMilliseconds}');
+    RoutesHandler.checkRoutes(_registredRoutes);
 
     _instance._httpServer = await HttpServer.bind(
         _instance.application.host, _instance.application.port);
@@ -46,7 +43,6 @@ class Server {
         _instance._httpServer!.serverHeader);
     if (_instance._listeningToServer) return _serverInfo;
     _instance._httpServer!.listen(((event) async {
-      print(123);
       await _parseRequest(event).timeout(
           _instance.requestTimeOut != null
               ? _instance.requestTimeOut!
@@ -82,113 +78,205 @@ class Server {
   final List<RestControllerRoutesMapping> _registredRoutes = [];
 
   void _registerRoutes() {
-    MirrorSystem mirrorSystem = currentMirrorSystem();
-    mirrorSystem.libraries.forEach((lk, l) {
-      l.declarations.forEach((dk, d) {
-        if (d is ClassMirror) {
-          ClassMirror cm = d;
-          for (var md in cm.metadata) {
-            InstanceMirror metadata = md;
-            if (metadata.reflectee is RestController) {
-              String controllerPath = metadata.getField(#path).reflectee;
-              InstanceMirror controllerInstanceMirroir =
-                  cm.newInstance(Symbol(''), []);
-              ControllerInstance controllerInstance =
-                  ControllerInstance(controllerPath, controllerInstanceMirroir);
+    if (application.controllers.isNotEmpty) {
+      for (Type type in application.controllers) {
+        ClassMirror cm = reflectClass(type);
+        for (var md in cm.metadata) {
+          InstanceMirror metadata = md;
+          if (metadata.reflectee is RestController) {
+            String controllerPath = metadata.getField(#path).reflectee;
+            InstanceMirror controllerInstanceMirroir =
+                cm.newInstance(Symbol(''), []);
+            ControllerInstance controllerInstance =
+                ControllerInstance(controllerPath, controllerInstanceMirroir);
+            cm.declarations.forEach((key, value) {
+              if (value is MethodMirror) {
+                for (var element in value.metadata) {
+                  if (element.reflectee is Route) {
+                    InstanceMirror instanceMirror = reflect(element.reflectee);
+                    int index = _registredRoutes.indexWhere((element) =>
+                        element.controllerInstance.instanceMirror ==
+                        controllerInstanceMirroir);
+                    Map<Symbol, ARoute> map = {
+                      value.simpleName: Route(
+                          instanceMirror.getField(#path).reflectee,
+                          instanceMirror.getField(#method).reflectee)
+                    };
+                    if (index != -1) {
+                      Map<Symbol, ARoute> temp = _registredRoutes[index].routes;
+                      map.addAll(temp);
 
-              cm.declarations.forEach((key, value) {
-                if (value is MethodMirror) {
-                  for (var element in value.metadata) {
-                    if (element.reflectee is Route) {
-                      InstanceMirror instanceMirror =
-                          reflect(element.reflectee);
-                      int index = _registredRoutes.indexWhere((element) =>
-                          element.controllerInstance.instanceMirror ==
-                          controllerInstanceMirroir);
-                      Map<Symbol, ARoute> map = {
-                        value.simpleName: Route(
-                            instanceMirror.getField(#path).reflectee,
-                            instanceMirror.getField(#method).reflectee)
-                      };
-                      if (index != -1) {
-                        Map<Symbol, ARoute> temp =
-                            _registredRoutes[index].routes;
-                        map.addAll(temp);
-
-                        _registredRoutes[index] = RestControllerRoutesMapping(
-                            controllerInstance, map);
-                      } else {
-                        _registredRoutes.add(RestControllerRoutesMapping(
-                            controllerInstance, map));
-                      }
+                      _registredRoutes[index] =
+                          RestControllerRoutesMapping(controllerInstance, map);
+                    } else {
+                      _registredRoutes.add(
+                          RestControllerRoutesMapping(controllerInstance, map));
                     }
-                    if (element.reflectee is AuthenticatedRoute) {
-                      InstanceMirror instanceMirror =
-                          reflect(element.reflectee);
-                      Map<Symbol, ARoute> map = {
-                        value.simpleName: AuthenticatedRoute(
-                            instanceMirror.getField(#path).reflectee,
-                            instanceMirror.getField(#method).reflectee,
-                            instanceMirror
-                                .getField(#middlwareHandler)
-                                .reflectee)
-                      };
+                  }
+                  if (element.reflectee is AuthenticatedRoute) {
+                    InstanceMirror instanceMirror = reflect(element.reflectee);
+                    Map<Symbol, ARoute> map = {
+                      value.simpleName: AuthenticatedRoute(
+                          instanceMirror.getField(#path).reflectee,
+                          instanceMirror.getField(#method).reflectee,
+                          instanceMirror.getField(#middlwareHandler).reflectee)
+                    };
 
-                      int index = _registredRoutes.indexWhere((element) =>
-                          element.controllerInstance.instanceMirror ==
-                          controllerInstanceMirroir);
-                      if (index != -1) {
-                        Map<Symbol, ARoute> temp =
-                            _registredRoutes[index].routes;
-                        map.addAll(temp);
+                    int index = _registredRoutes.indexWhere((element) =>
+                        element.controllerInstance.instanceMirror ==
+                        controllerInstanceMirroir);
+                    if (index != -1) {
+                      Map<Symbol, ARoute> temp = _registredRoutes[index].routes;
+                      map.addAll(temp);
 
-                        _registredRoutes[index] = RestControllerRoutesMapping(
-                            controllerInstance, map);
-                      } else {
-                        _registredRoutes.add(RestControllerRoutesMapping(
-                            controllerInstance, map));
-                      }
+                      _registredRoutes[index] =
+                          RestControllerRoutesMapping(controllerInstance, map);
+                    } else {
+                      _registredRoutes.add(
+                          RestControllerRoutesMapping(controllerInstance, map));
                     }
-                    if (element.reflectee is AuthorizatedRoute) {
-                      InstanceMirror instanceMirror =
-                          reflect(element.reflectee);
-                      Map<Symbol, ARoute> map = {
-                        value.simpleName: AuthorizatedRoute(
-                            instanceMirror.getField(#path).reflectee,
-                            instanceMirror.getField(#method).reflectee,
-                            instanceMirror
-                                .getField(#middlwareHandler)
-                                .reflectee,
-                            instanceMirror.getField(#roles).reflectee,
-                            instanceMirror.getField(#userProvider).reflectee)
-                      };
-                      int index = _registredRoutes.indexWhere((element) =>
-                          element.controllerInstance.instanceMirror ==
-                          controllerInstanceMirroir);
-                      if (index != -1) {
-                        Map<Symbol, ARoute> temp =
-                            _registredRoutes[index].routes;
-                        map.addAll(temp);
+                  }
+                  if (element.reflectee is AuthorizatedRoute) {
+                    InstanceMirror instanceMirror = reflect(element.reflectee);
+                    Map<Symbol, ARoute> map = {
+                      value.simpleName: AuthorizatedRoute(
+                          instanceMirror.getField(#path).reflectee,
+                          instanceMirror.getField(#method).reflectee,
+                          instanceMirror.getField(#middlwareHandler).reflectee,
+                          instanceMirror.getField(#roles).reflectee,
+                          instanceMirror.getField(#userProvider).reflectee)
+                    };
+                    int index = _registredRoutes.indexWhere((element) =>
+                        element.controllerInstance.instanceMirror ==
+                        controllerInstanceMirroir);
+                    if (index != -1) {
+                      Map<Symbol, ARoute> temp = _registredRoutes[index].routes;
+                      map.addAll(temp);
 
-                        _registredRoutes[index] = RestControllerRoutesMapping(
-                            controllerInstance, map);
-                      } else {
-                        _registredRoutes.add(RestControllerRoutesMapping(
-                            controllerInstance, map));
-                      }
+                      _registredRoutes[index] =
+                          RestControllerRoutesMapping(controllerInstance, map);
+                    } else {
+                      _registredRoutes.add(
+                          RestControllerRoutesMapping(controllerInstance, map));
                     }
                   }
                 }
-              });
-            }
+              }
+            });
           }
         }
+      }
+    } else {
+      MirrorSystem mirrorSystem = currentMirrorSystem();
+
+      mirrorSystem.libraries.forEach((lk, l) {
+        l.declarations.forEach((dk, d) {
+          if (d is ClassMirror) {
+            ClassMirror cm = d;
+            for (var md in cm.metadata) {
+              InstanceMirror metadata = md;
+              if (metadata.reflectee is RestController) {
+                String controllerPath = metadata.getField(#path).reflectee;
+                InstanceMirror controllerInstanceMirroir =
+                    cm.newInstance(Symbol(''), []);
+                ControllerInstance controllerInstance = ControllerInstance(
+                    controllerPath, controllerInstanceMirroir);
+
+                cm.declarations.forEach((key, value) {
+                  if (value is MethodMirror) {
+                    for (var element in value.metadata) {
+                      if (element.reflectee is Route) {
+                        InstanceMirror instanceMirror =
+                            reflect(element.reflectee);
+                        int index = _registredRoutes.indexWhere((element) =>
+                            element.controllerInstance.instanceMirror ==
+                            controllerInstanceMirroir);
+                        Map<Symbol, ARoute> map = {
+                          value.simpleName: Route(
+                              instanceMirror.getField(#path).reflectee,
+                              instanceMirror.getField(#method).reflectee)
+                        };
+                        if (index != -1) {
+                          Map<Symbol, ARoute> temp =
+                              _registredRoutes[index].routes;
+                          map.addAll(temp);
+
+                          _registredRoutes[index] = RestControllerRoutesMapping(
+                              controllerInstance, map);
+                        } else {
+                          _registredRoutes.add(RestControllerRoutesMapping(
+                              controllerInstance, map));
+                        }
+                      }
+                      if (element.reflectee is AuthenticatedRoute) {
+                        InstanceMirror instanceMirror =
+                            reflect(element.reflectee);
+                        Map<Symbol, ARoute> map = {
+                          value.simpleName: AuthenticatedRoute(
+                              instanceMirror.getField(#path).reflectee,
+                              instanceMirror.getField(#method).reflectee,
+                              instanceMirror
+                                  .getField(#middlwareHandler)
+                                  .reflectee)
+                        };
+
+                        int index = _registredRoutes.indexWhere((element) =>
+                            element.controllerInstance.instanceMirror ==
+                            controllerInstanceMirroir);
+                        if (index != -1) {
+                          Map<Symbol, ARoute> temp =
+                              _registredRoutes[index].routes;
+                          map.addAll(temp);
+
+                          _registredRoutes[index] = RestControllerRoutesMapping(
+                              controllerInstance, map);
+                        } else {
+                          _registredRoutes.add(RestControllerRoutesMapping(
+                              controllerInstance, map));
+                        }
+                      }
+                      if (element.reflectee is AuthorizatedRoute) {
+                        InstanceMirror instanceMirror =
+                            reflect(element.reflectee);
+                        Map<Symbol, ARoute> map = {
+                          value.simpleName: AuthorizatedRoute(
+                              instanceMirror.getField(#path).reflectee,
+                              instanceMirror.getField(#method).reflectee,
+                              instanceMirror
+                                  .getField(#middlwareHandler)
+                                  .reflectee,
+                              instanceMirror.getField(#roles).reflectee,
+                              instanceMirror.getField(#userProvider).reflectee)
+                        };
+                        int index = _registredRoutes.indexWhere((element) =>
+                            element.controllerInstance.instanceMirror ==
+                            controllerInstanceMirroir);
+                        if (index != -1) {
+                          Map<Symbol, ARoute> temp =
+                              _registredRoutes[index].routes;
+                          map.addAll(temp);
+
+                          _registredRoutes[index] = RestControllerRoutesMapping(
+                              controllerInstance, map);
+                        } else {
+                          _registredRoutes.add(RestControllerRoutesMapping(
+                              controllerInstance, map));
+                        }
+                      }
+                    }
+                  }
+                });
+              }
+            }
+          }
+        });
       });
-    });
+    }
   }
 
   Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
     final String path = httpRequest.uri.path;
+
     final String method = httpRequest.method;
 
     List<RestControllerRoutesMapping> matchedPaths =
@@ -203,7 +291,7 @@ class Server {
               restControllerRoutesMapping.controllerInstance.controllerPath +
                   aRoute.path;
 
-          if (aRoute.method == method) {
+          if (aRoute.method.requestMethod == method) {
             Map<String, dynamic>? pathParams = RoutesHandler.pathMatcher(
                 routePath: fullPath, matchesPath: path);
             Request request =
@@ -258,11 +346,11 @@ class Server {
                 }
               }
               if (authFuncts.isEmpty) {
-                print("func is required");
-                return true;
+                throw Exception(
+                    'your need to implenent a function with @AuthorizationREquired inside the class');
               } else if (authFuncts.length > 1) {
-                print("just one func is required");
-                return true;
+                throw Exception(
+                    'your need to implenent only one function with @AuthorizationREquired inside the class');
               }
               final UserDetails? userDetails =
                   await authenticationProviderInstance.invoke(authFuncts.first,

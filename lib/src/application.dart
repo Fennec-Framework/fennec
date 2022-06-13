@@ -37,6 +37,17 @@ class Application {
     return this;
   }
 
+  final List<Type> _controllers = [];
+  void addController(Type controller) {
+    _instance._controllers.add(controller);
+  }
+
+  void addControllers(List<Type> controllers) {
+    _instance._controllers.addAll(controllers);
+  }
+
+  List<Type> get controllers => _instance._controllers;
+
   void set(String key, dynamic value) {
     switch (key.toLowerCase()) {
       case 'views engine':
@@ -83,6 +94,7 @@ class Application {
       view = View(fileName, _instance._engines,
           defaultEngine: _instance._settings.viewEngine,
           rootPath: _instance.rootPath);
+      print(view.filePath);
       if (view.filePath == null) {
         late String dirs;
         if (view.rootPath is List) {

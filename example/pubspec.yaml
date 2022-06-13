@@ -1,0 +1,14 @@
+name: example
+description: A simple command-line application.
+version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+dependencies:
+  fennec:
+    path: "/Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec"
+
+dev_dependencies:
+  lints: ^1.0.0

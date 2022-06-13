@@ -42,6 +42,7 @@ class View {
 
   String? lookup(String fileName) {
     String? finalPath;
+
     final List<String> roots = rootPath is List ? rootPath : [rootPath];
     for (var i = 0; i < roots.length && finalPath == null; i++) {
       final root = roots[i];

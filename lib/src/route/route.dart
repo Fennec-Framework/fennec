@@ -3,17 +3,18 @@ part of fennec;
 /// abstract class for all possible Route Annotations.
 abstract class ARoute {
   final String path;
-  final String method;
+  final RequestMethod method;
   const ARoute(this.path, this.method);
 }
 
 class Route extends ARoute {
-  const Route(String path, String method) : super(path, method);
+  const Route(String path, RequestMethod method) : super(path, method);
 }
 
 class AuthenticatedRoute extends ARoute {
   final MiddlwareHandler middlwareHandler;
-  const AuthenticatedRoute(String path, String method, this.middlwareHandler)
+  const AuthenticatedRoute(
+      String path, RequestMethod method, this.middlwareHandler)
       : super(path, method);
 }
 
@@ -23,7 +24,7 @@ class AuthorizatedRoute extends ARoute {
   final UserProvider userProvider;
   const AuthorizatedRoute(
     String path,
-    String method,
+    RequestMethod method,
     this.middlwareHandler,
     this.roles,
     this.userProvider,

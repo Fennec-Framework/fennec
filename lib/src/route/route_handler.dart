@@ -20,10 +20,28 @@ class RoutesHandler {
     return params;
   }
 
+  static void checkRoutes(List<RestControllerRoutesMapping> routes) {
+    List<String> exitingsRoutes = [];
+    for (RestControllerRoutesMapping routesMapping in routes) {
+      for (var element in routesMapping.routes.entries) {
+        String composed = (routesMapping.controllerInstance.controllerPath +
+                element.value.path +
+                element.value.method.requestMethod)
+            .toLowerCase();
+        if (exitingsRoutes.contains(composed)) {
+          throw Exception('you have multiples Routes with the same end point');
+        } else {
+          exitingsRoutes.add(composed);
+        }
+      }
+    }
+  }
+
   static List<RestControllerRoutesMapping> getMatchedRoute1s(
       List<RestControllerRoutesMapping> routes, String path) {
     List<RestControllerRoutesMapping> _routes = [];
     List<String> pathComponents = path.split("/");
+
     for (RestControllerRoutesMapping routesMapping in routes) {
       Map<Symbol, ARoute> _routesMap = {};
       for (var element in routesMapping.routes.entries) {
@@ -31,11 +49,13 @@ class RoutesHandler {
             (routesMapping.controllerInstance.controllerPath +
                     element.value.path)
                 .split("/");
+
         bool checker = false;
         if (pathComponents.length == routeComponents.length) {
           for (int i = 0; i < pathComponents.length && !checker; i++) {
             String path = pathComponents[i];
             String route = routeComponents[i];
+
             if (path != route && !route.startsWith("@")) {
               checker = true;
             }
