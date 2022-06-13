@@ -5,13 +5,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:mirrors';
 
+import 'package:fennec/src/annotations/controller_instance.dart';
+import 'package:fennec/src/annotations/middlware_annotation_entity.dart';
+import 'package:fennec/src/annotations/restcontroller_routes_mapping.dart';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart';
 
-import 'src/annotations/annotations.dart';
-import 'src/annotations/controller_instance.dart';
-import 'src/annotations/middlware_annotation_entity.dart';
-import 'src/annotations/restcontroller_routes_mapping.dart';
+part 'src/annotations/annotations.dart';
 
 part 'src/application.dart';
 part 'src/body_parser.dart';

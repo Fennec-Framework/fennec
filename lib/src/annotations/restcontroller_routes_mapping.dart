@@ -1,4 +1,5 @@
-import '../../fennec.dart';
+import 'package:fennec/fennec.dart';
+
 import 'controller_instance.dart';
 
 class RestControllerRoutesMapping {

@@ -1,5 +1,5 @@
 import 'package:fennec/fennec.dart';
-import 'package:fennec/src/annotations/annotations.dart';
+
 import 'package:path/path.dart' as path;
 
 Future<void> main() async {

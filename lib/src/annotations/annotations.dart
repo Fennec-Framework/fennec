@@ -1,4 +1,4 @@
-import 'package:fennec/fennec.dart';
+part of fennec;
 
 class RestController {
   final String path;

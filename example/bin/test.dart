@@ -1,5 +1,4 @@
 import 'package:fennec/fennec.dart';
-import 'package:fennec/src/annotations/annotations.dart';
 
 @RestController(path: '/example')
 class Test {

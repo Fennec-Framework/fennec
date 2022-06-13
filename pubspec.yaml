@@ -1,6 +1,9 @@
 name: fennec
-description: A simple command-line application.
-version: 1.0.0
+description: Fennec is a dart web framework with the principal goal make web server side more easy and fast to develop.
+version: 0.0.1
+homepage: https://github.com/Fennec-Framework/fennec
+author: Akram Chorfi
+
 # homepage: https://www.example.com
 
 environment:
