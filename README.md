@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://github.com/Fennec-Framework/fennec/blob/master/Fennec%20Framework.png" height="500" />
+<img src="https://user-images.githubusercontent.com/55693316/173706793-0666f8a8-67d6-4d1b-8b79-78fa4808e72e.png" height="500" />
 </p>
 
 
@@ -9,7 +9,7 @@
 # installation:
 
 1) create a simple dart project. you can use terminal for that **dart create 'projectname'**
-2) install the framework from [pub.dev](https://pub.dev/)
+2) install the framework from [pub.dev](https://pub.dev/packages/fennec)
 
 # make your first request:
 
@@ -47,12 +47,12 @@ class Test {
   
   
   
-## Middlware 
+## Middleware 
 
-it must be a subtype of the class **MiddlwareHandler** , here an example how to implement it:
+it must be a subtype of the class **MiddlewareHandler** , here an example how to implement it:
 
 ``` dart
-class MiddlewareHanlderImpl extends MiddlwareHandler<MiddlewareHanlderImpl> {
+class MiddlewareHanlderImpl extends MiddlewareHandler<MiddlewareHanlderImpl> {
   const MiddlewareHanlderImpl();
   @Middleware(priority: 0)
   Future<MiddleWareResponse> test(Request request, Response response) async {
@@ -189,7 +189,7 @@ void main(List<String> arguments) async {
   
 # License
 
-[MIT](https://github.com/Fennec-Framework/fennec/blob/master/Licence)
+[MIT](https://github.com/Fennec-Framework/fennec/blob/master/LICENSE)
 
 
 
