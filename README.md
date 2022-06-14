@@ -9,7 +9,7 @@
 # installation:
 
 1) create a simple dart project. you can use terminal for that **dart create 'projectname'**
-2) install the framework from [pub.dev](https://pub.dev/)
+2) install the framework from [pub.dev](https://pub.dev/packages/fennec)
 
 # make your first request:
 
