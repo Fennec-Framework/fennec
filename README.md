@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://github.com/Fennec-Framework/fennec/blob/master/Fennec%20Framework.png" height="500" />
+<img src="https://user-images.githubusercontent.com/55693316/173706793-0666f8a8-67d6-4d1b-8b79-78fa4808e72e.png" height="500" />
 </p>
 
 
