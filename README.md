@@ -47,12 +47,12 @@ class Test {
   
   
   
-## Middlware 
+## Middleware 
 
-it must be a subtype of the class **MiddlwareHandler** , here an example how to implement it:
+it must be a subtype of the class **MiddlewareHandler** , here an example how to implement it:
 
 ``` dart
-class MiddlewareHanlderImpl extends MiddlwareHandler<MiddlewareHanlderImpl> {
+class MiddlewareHanlderImpl extends MiddlewareHandler<MiddlewareHanlderImpl> {
   const MiddlewareHanlderImpl();
   @Middleware(priority: 0)
   Future<MiddleWareResponse> test(Request request, Response response) async {
@@ -189,7 +189,7 @@ void main(List<String> arguments) async {
   
 # License
 
-[MIT](https://github.com/Fennec-Framework/fennec/blob/master/License)
+[MIT](https://github.com/Fennec-Framework/fennec/blob/master/LICENSE)
 
 
 
