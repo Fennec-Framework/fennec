@@ -189,7 +189,7 @@ void main(List<String> arguments) async {
   
 # License
 
-[MIT](https://github.com/Fennec-Framework/fennec/blob/master/Licence)
+[MIT](https://github.com/Fennec-Framework/fennec/blob/master/License)
 
 
 
