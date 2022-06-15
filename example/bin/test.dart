@@ -56,36 +56,32 @@ class UserProviderImpl extends UserProvider {
 
 class UserDetailsImpl extends UserDetails {
   UserDetailsImpl(id, String username, String email, String password,
-      Iterable<Object> authorities)
+      Iterable<String> authorities)
       : super(id, username, email, password, authorities);
 
   @override
   UserDetails fromJson(Map<String, dynamic> map) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
+    return UserDetailsImpl(map['id'], map['username'], map['email'],
+        map['password'], map['authorities']);
   }
 
   @override
   bool isAccountNonExpired() {
-    // TODO: implement isAccountNonExpired
-    throw UnimplementedError();
+    return true;
   }
 
   @override
   bool isAccountNonLocked() {
-    // TODO: implement isAccountNonLocked
-    throw UnimplementedError();
+    return true;
   }
 
   @override
   bool isCredentialsNonExpired() {
-    // TODO: implement isCredentialsNonExpired
-    throw UnimplementedError();
+    return true;
   }
 
   @override
   bool isEnabled() {
-    // TODO: implement isEnabled
-    throw UnimplementedError();
+    return true;
   }
 }

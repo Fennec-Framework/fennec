@@ -2,14 +2,11 @@ part of fennec;
 
 class _AppSettings {
   bool cache;
-  bool printRoutes;
   String? viewsPath;
   String viewEngine;
-
   _AppSettings({
     this.cache = true,
     String? viewsPath,
-    this.printRoutes = false,
     this.viewEngine = 'html',
   }) : viewsPath = viewsPath ?? path.absolute('views');
 }
