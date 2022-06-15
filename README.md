@@ -6,6 +6,14 @@
 
 # Fennec is a dart web framework with the principal goal: make web server side more easy and fast to develop.
 
+
+# Packages
+
+| Packages                    | pub                                           |
+| :---                        |    :----:                                     |         
+| fennec (core framework)      | [fennec](https://pub.dev/packages/fennec)    |
+| fennec_jwt                  | [fennec_jwt](https://pub.dev/packages/fennec_jwt)| 
+
 # installation:
 
 1) create a simple dart project. you can use terminal for that **dart create 'projectname'**
