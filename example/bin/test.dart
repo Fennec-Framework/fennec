@@ -7,6 +7,21 @@ class Test {
     response.send('hello world');
   }
 
+  @Route('/dynamic_route/@user_id/@doc_id', RequestMethod.get())
+  Future dynamicRoutes(Request request, Response response) async {
+    response.json({
+      'userId': request.pathParams!['user_id'],
+      'docId': request.pathParams!['doc_id']
+    });
+  }
+
+  @Route('/files', RequestMethod.get())
+  Future fileSystems(Request request, Response response) async {
+    response.json({
+      'file1': request.files.first.toString(),
+    });
+  }
+
   @AuthenticatedRoute('/template', RequestMethod.get(), MiddlewareHanlderImpl())
   Future testMiddleWare(Request request, Response response) async {
     response.render('template.html');
