@@ -1,3 +1,3 @@
-## 0.0.3
+## 0.0.4
 
-- update ReadMe.
+- update docs on readme.
