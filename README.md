@@ -192,7 +192,18 @@ void main(List<String> arguments) async {
   await server.startServer();
 }
 ```
+  
+  
 
+# deploy
+  
+  - **heroku cloud** (here)[https://github.com/Fennec-Framework/heroku-buildpack] is an example how to deploy Fennec Framework on heroku cloud for free.
+    to test an example you can try this two endpoints:
+    - https://fennec-deploy.herokuapp.com/healthcheck/servercheck
+     
+    - https://fennec-deploy.herokuapp.com/healthcheck
+  
+  - for next days, another example for aws and goolge run will be uploaded.
   
   
 # License
