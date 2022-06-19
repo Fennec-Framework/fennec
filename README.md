@@ -9,10 +9,11 @@
 
 # Packages
 
-| Packages                    | pub                                           |
-| :---                        |    :----:                                     |         
-| fennec (core framework)      | [fennec](https://pub.dev/packages/fennec)    |
-| fennec_jwt                  | [fennec_jwt](https://pub.dev/packages/fennec_jwt)| 
+| Packages                     | pub                                              |
+| :---                         |    :----:                                        |         
+| fennec (core framework)      | [fennec](https://pub.dev/packages/fennec)        |
+| fennec_pg                    | [fennec_jwt](https://pub.dev/packages/fennec_pg) | 
+| fennec_jwt                   | [fennec_jwt](https://pub.dev/packages/fennec_jwt)| 
 
 # installation:
 
