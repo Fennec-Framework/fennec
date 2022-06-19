@@ -146,8 +146,40 @@ class UserDetailsImpl extends UserDetails {
     throw UnimplementedError();
   }
 }
+ 
 ```
   
+  
+## dynamic routes
+  
+here is an example hot to use dynamic routes
+  
+``` dart
+@Route('/dynamic_route/@user_id/@doc_id', RequestMethod.get())
+Future dynamicRoutes(Request request, Response response) async {
+    response.json({
+      'userId': request.pathParams!['user_id'],
+      'docId': request.pathParams!['doc_id']
+    });
+  }
+  
+```
+  
+  
+## File System Routing
+  
+an example how to handle files 
+  
+``` dart
+  
+@Route('/files', RequestMethod.get())
+Future fileSystems(Request request, Response response) async {
+    response.json({
+      'file1': request.files.first.toString(),
+    });
+}
+  
+```
   
 ## WebSocket
  
