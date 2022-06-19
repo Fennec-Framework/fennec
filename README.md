@@ -197,7 +197,7 @@ void main(List<String> arguments) async {
 
 # deploy
   
-  - **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack) is an example how to deploy Fennec Framework on heroku cloud for free.
+  - **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack)  is heroku-buildpack for dart and inside it  an example how to deploy Fennec Framework on heroku cloud for free.
     to test an example you can try this two endpoints:
     - https://fennec-deploy.herokuapp.com/healthcheck/servercheck
      
