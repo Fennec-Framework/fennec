@@ -1,26 +1,26 @@
 part of fennec;
 
-class _AppSettings {
-  bool cache;
-  String? viewsPath;
-  String viewEngine;
-  _AppSettings({
-    this.cache = true,
-    String? viewsPath,
-    this.viewEngine = 'html',
-  }) : viewsPath = viewsPath ?? path.absolute('views');
+class AppSettings {
+  late String viewsPath;
+  late bool cache;
+  late String viewEngine;
+  AppSettings({
+    cache = true,
+    String? viewPathParam,
+    viewEngine = 'html',
+  }) : viewsPath = viewPathParam ?? path.absolute('views');
 }
 
 class Application {
   late dynamic host;
   late int port;
   String? rootPath;
-  late _AppSettings _settings;
+  late AppSettings _settings;
   late Map<String, dynamic> cache;
   late Map<String, Engine> _engines;
   static final Application _instance = Application._internal();
   factory Application(dynamic host, int port) {
-    _instance._settings = _AppSettings();
+    _instance._settings = AppSettings();
     _instance.cache = {};
     _instance._engines = {'html': HtmlEngine.use()};
     _instance.host = host;
