@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:isolate';
-
 import 'package:fennec/fennec.dart';
 import 'package:path/path.dart' as path;
 

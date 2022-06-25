@@ -1,5 +1,3 @@
-import 'dart:io' show WebSocket;
-
 import 'package:fennec/fennec.dart';
 
 @RestController(path: '/example')
@@ -20,8 +18,6 @@ class Test {
 
   @Route('/files', RequestMethod.get())
   Future fileSystems(Request request, Response response) async {
-    Stopwatch stopwatch = Stopwatch()..start();
-
     for (int i = 0; i < 1000000; i++) {
       print(i);
     }
