@@ -34,6 +34,11 @@ class Application {
   }
 
   final List<Type> _controllers = [];
+  int numberOfProcessors = 1;
+  void setProcessors(int num) {
+    _instance.numberOfProcessors = num;
+  }
+
   void addController(Type controller) {
     _instance._controllers.add(controller);
   }

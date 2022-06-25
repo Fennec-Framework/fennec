@@ -1,3 +1,5 @@
+import 'dart:io' show WebSocket;
+
 import 'package:fennec/fennec.dart';
 
 @RestController(path: '/example')
@@ -9,6 +11,7 @@ class Test {
 
   @Route('/dynamic_route/@user_id/@doc_id', RequestMethod.get())
   Future dynamicRoutes(Request request, Response response) async {
+    print(request.pathParams!);
     response.json({
       'userId': request.pathParams!['user_id'],
       'docId': request.pathParams!['doc_id']
@@ -18,7 +21,7 @@ class Test {
   @Route('/files', RequestMethod.get())
   Future fileSystems(Request request, Response response) async {
     response.json({
-      'file1': request.files.first.toString(),
+      'file1': '123',
     });
   }
 

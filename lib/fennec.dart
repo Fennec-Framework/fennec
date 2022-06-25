@@ -3,6 +3,7 @@ library fennec;
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:mirrors';
 
 import 'package:fennec/src/annotations/controller_instance.dart';

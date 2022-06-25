@@ -32,8 +32,22 @@ class Server {
     _registerRoutes();
     RoutesHandler.checkRoutes(_registredRoutes);
 
+    if (_instance.application.numberOfProcessors == 1) {
+      return isolateServer(
+          [_instance.application.numberOfProcessors.toString(), false]);
+    }
+    for (int i = 1; i < _instance.application.numberOfProcessors; i++) {
+      Isolate.spawn(isolateServer, [i.toString(), true]);
+    }
+    return isolateServer(
+        [_instance.application.numberOfProcessors.toString(), true]);
+  }
+
+  Future<ServerInfo> isolateServer(List<Object> args) async {
     _instance._httpServer = await HttpServer.bind(
-        _instance.application.host, _instance.application.port);
+        InternetAddress.anyIPv4, application.port,
+        shared: args[1] as bool);
+
     final ServerInfo _serverInfo = ServerInfo(
         _instance._httpServer!.address,
         _instance._httpServer!.port,
@@ -81,8 +95,10 @@ class Server {
     if (application.controllers.isNotEmpty) {
       for (Type type in application.controllers) {
         ClassMirror cm = reflectClass(type);
+
         for (var md in cm.metadata) {
           InstanceMirror metadata = md;
+
           if (metadata.reflectee is RestController) {
             String controllerPath = metadata.getField(#path).reflectee;
             InstanceMirror controllerInstanceMirroir =
