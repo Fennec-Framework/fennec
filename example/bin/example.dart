@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:isolate';
+
 import 'package:fennec/fennec.dart';
 import 'package:path/path.dart' as path;
 
@@ -8,7 +11,7 @@ void main(List<String> arguments) async {
   application.set('cache', true);
   application.set('views', path.join(path.current, 'views'));
   application.addController(Test);
-  application.setProcessors(1);
+  application.setNumberOfProcessors(1);
   Server server = Server(application);
   WebSocketHandler webSocketHandler = WebSocketHandler();
   webSocketHandler.registerWebSocketHandler(server);

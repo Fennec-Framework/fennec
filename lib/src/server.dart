@@ -33,21 +33,18 @@ class Server {
     RoutesHandler.checkRoutes(_registredRoutes);
 
     if (_instance.application.numberOfProcessors == 1) {
-      return isolateServer(
-          [_instance.application.numberOfProcessors.toString(), false]);
+      return isolateServer(false);
     }
     for (int i = 1; i < _instance.application.numberOfProcessors; i++) {
-      Isolate.spawn(isolateServer, [i.toString(), true]);
+      Isolate.spawn(isolateServer, true);
     }
-    return isolateServer(
-        [_instance.application.numberOfProcessors.toString(), true]);
+    return isolateServer(true);
   }
 
-  Future<ServerInfo> isolateServer(List<Object> args) async {
+  Future<ServerInfo> isolateServer(bool shared) async {
     _instance._httpServer = await HttpServer.bind(
-        InternetAddress.anyIPv4, application.port,
-        shared: args[1] as bool);
-
+        application.host, application.port,
+        shared: shared);
     final ServerInfo _serverInfo = ServerInfo(
         _instance._httpServer!.address,
         _instance._httpServer!.port,

@@ -20,6 +20,11 @@ class Test {
 
   @Route('/files', RequestMethod.get())
   Future fileSystems(Request request, Response response) async {
+    Stopwatch stopwatch = Stopwatch()..start();
+
+    for (int i = 0; i < 1000000; i++) {
+      print(i);
+    }
     response.json({
       'file1': '123',
     });

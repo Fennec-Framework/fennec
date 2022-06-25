@@ -35,7 +35,7 @@ class Application {
 
   final List<Type> _controllers = [];
   int numberOfProcessors = 1;
-  void setProcessors(int num) {
+  void setNumberOfProcessors(int num) {
     _instance.numberOfProcessors = num;
   }
 
