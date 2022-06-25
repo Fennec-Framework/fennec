@@ -8,18 +8,21 @@ void main(List<String> arguments) async {
   application.set('cache', true);
   application.set('views', path.join(path.current, 'views'));
   application.addController(Test);
+  application.setNumberOfIsolates(1);
   Server server = Server(application);
   WebSocketHandler webSocketHandler = WebSocketHandler();
   webSocketHandler.registerWebSocketHandler(server);
   webSocketHandler.clientsListener.stream.listen((event) {
     print('new client');
+
     if (event.headers!.value('token') != null) {
       webSocketHandler.addClient(event);
+      webSocketHandler.sendToAllJson({'key': 'value'});
     } else {
       event.webSocket.add('not allowed');
     }
   });
   //Send data to all registred Clients
   webSocketHandler.sendToAllJson({'key': 'value'});
-  await server.startServer();
+  server.startServer();
 }

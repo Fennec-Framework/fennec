@@ -34,6 +34,11 @@ class Application {
   }
 
   final List<Type> _controllers = [];
+  int numberOfIsolates = 1;
+  void setNumberOfIsolates(int num) {
+    _instance.numberOfIsolates = num;
+  }
+
   void addController(Type controller) {
     _instance._controllers.add(controller);
   }
