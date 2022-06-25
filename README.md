@@ -204,6 +204,19 @@ webSocketHandler.sendToAllJson({'key': 'value'});
   
 ```
   
+## Multithreading
+  
+Fennec Framework supports also Multithreading over isolates. To increate the number of used isolates just call the functions setNumberOfIsolates. the default number of isolates is 1
+  
+**example**
+  
+``` dart
+
+application.setNumberOfIsolates(1);
+  
+```
+  
+  
 
   
   
