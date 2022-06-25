@@ -34,9 +34,9 @@ class Application {
   }
 
   final List<Type> _controllers = [];
-  int numberOfProcessors = 1;
-  void setNumberOfProcessors(int num) {
-    _instance.numberOfProcessors = num;
+  int numberOfIsolates = 1;
+  void setNumberOfIsolates(int num) {
+    _instance.numberOfIsolates = num;
   }
 
   void addController(Type controller) {

@@ -8,7 +8,7 @@ void main(List<String> arguments) async {
   application.set('cache', true);
   application.set('views', path.join(path.current, 'views'));
   application.addController(Test);
-  application.setNumberOfProcessors(1);
+  application.setNumberOfIsolates(1);
   Server server = Server(application);
   WebSocketHandler webSocketHandler = WebSocketHandler();
   webSocketHandler.registerWebSocketHandler(server);

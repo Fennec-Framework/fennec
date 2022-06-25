@@ -32,10 +32,10 @@ class Server {
     _registerRoutes();
     RoutesHandler.checkRoutes(_registredRoutes);
 
-    if (_instance.application.numberOfProcessors == 1) {
+    if (_instance.application.numberOfIsolates == 1) {
       return isolateServer(false);
     }
-    for (int i = 1; i < _instance.application.numberOfProcessors; i++) {
+    for (int i = 1; i < _instance.application.numberOfIsolates; i++) {
       Isolate.spawn(isolateServer, true);
     }
     return isolateServer(true);
