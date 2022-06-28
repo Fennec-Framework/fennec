@@ -1,6 +1,11 @@
 part of fennec;
 
+/// [HtmlEngine] is a class that contains the html engine.
+/// It's used to get the html engine.
 class HtmlEngine {
+  /// [ext] is a [String] that contains the extension of the engine.
+  /// It's set to [html].
+  /// bydefault it's ".html".
   static String ext = '.html';
 
   /// Called when rendering an HTML file in the Response

@@ -1,14 +1,33 @@
 part of fennec;
 
+/// [View] is a class that contains the view.
 class View {
+  /// [rootPath] contains the root path.
+  ///
+  /// bydefault it's set to "/".
   dynamic rootPath;
+
+  /// [defaultEngine] contains the default engine.
+  ///
+  /// bydefault it's set to "html".
   String? defaultEngine;
+
+  /// [filePath] contains the file path.
   String? filePath;
+
+  /// [ext] is a [String] that contains the extension of the view.
   String? ext;
+
+  /// [name] is a [String] that contains the name of the view.
   String name;
+
+  /// [engine] is a [Engine] that contains the engine of the view.
   Engine? engine;
+
+  /// [engines] is a [Map] that contains the engines of the view.
   Map<String, Engine> engines;
 
+  /// [View] is a constructor that creates a new [View] object.
   View(
     this.name,
     this.engines, {

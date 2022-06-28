@@ -4,10 +4,10 @@ packages:
   fennec:
     dependency: "direct main"
     description:
-      path: "/Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec"
-      relative: false
+      path: ".."
+      relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   lints:
     dependency: "direct dev"
     description:

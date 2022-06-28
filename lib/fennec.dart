@@ -1,3 +1,4 @@
+/// Fennec is a dart web framework with the principal goal make web server side more easy and fast to develop.
 library fennec;
 
 import 'dart:io';
