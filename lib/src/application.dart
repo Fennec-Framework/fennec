@@ -8,7 +8,7 @@ class Application {
   late Map<String, dynamic> cache;
 
   /// [_engines] is a [Map] that contains the engines of the application.
-  late Map<String, Engine> _engines;
+  final Map<String, Engine> _engines = {};
 
   /// instance of [Application] that contains the application.
   static final Application _instance = Application._internal();
