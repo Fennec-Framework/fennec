@@ -1,24 +1,32 @@
 part of fennec;
 
+/// [Application] is a class that contains the application.
 class Application {
   late final ApplicationConfiguration applicationConfiguration;
 
+  /// [cache] is a [Map] that contains the cached data of the application.
   late Map<String, dynamic> cache;
+
+  /// [_engines] is a [Map] that contains the engines of the application.
   late Map<String, Engine> _engines;
+
+  /// instance of [Application] that contains the application.
   static final Application _instance = Application._internal();
+
+  /// [Application] is a constructor that creates a new [Application] object.
   factory Application(ApplicationConfiguration applicationConfiguration) {
     _instance.applicationConfiguration = applicationConfiguration;
     return _instance;
   }
   Application._internal();
 
+  /// [render] is a method that renders a view.
   void render(
     String fileName,
     Map<String, dynamic>? locals,
     Function(dynamic, String?) callback,
   ) {
     final view = _getViewFromFileName(fileName);
-
     view.render(locals, callback);
   }
 

@@ -1,5 +1,6 @@
 part of fennec;
 
+/// [routeNotFoundException] is a public function that is used throw a route not found exception.
 void routeNotFoundException(HttpResponse response, String path, String method) {
   response
     ..statusCode = HttpStatus.notFound
@@ -9,6 +10,7 @@ void routeNotFoundException(HttpResponse response, String path, String method) {
     ..close();
 }
 
+/// [methodNotAllowedException] is a public function that is used throw a method not allowed exception.
 void methodNotAllowedException(
     HttpResponse response, String path, String method) {
   response

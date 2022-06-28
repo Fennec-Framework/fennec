@@ -1,19 +1,36 @@
 part of fennec;
 
+/// [Server] is a class that contains information about the server.
 class Server {
+  /// [application] is a [Application] that contains the application.
   late Application application;
 
+  /// [_httpServer] is a [HttpServer] that contains the http server.
+  /// bydefault it's null.
   late HttpServer? _httpServer;
+
+  /// [_listeningToServer] is a [bool] that indicates if the server is listening.
+  /// bydefault it's false.
   bool _listeningToServer = false;
+
+  /// [_instance] is a [Server] that contains the instance of the server.
   static final Server _instance = Server._internal();
 
+  /// [Server] is a constructor that creates a new [Server] object.
+  /// It's used to create a new [Server] object.
   factory Server(Application application) {
     _instance.application = application;
-
     return _instance;
   }
+
+  /// [Server] is a constructor that creates a new [Server] object.
   Server._internal();
+
+  /// [requestTimeOut] is a [Duration] that contains the request timeout of the server.
+  /// bydefault it's null.
   Duration? requestTimeOut;
+
+  /// [setRequestTimeOut] is a method that sets the request timeout of the server.
   void setRequestTimeOut(Duration duration) {
     _instance.requestTimeOut = duration;
   }
@@ -28,6 +45,10 @@ class Server {
   HttpServer get httpServer => _instance._httpServer == null
       ? throw Exception("you should start first")
       : _instance._httpServer!;
+
+  /// [startServer] is a method that starts the server.
+  /// It's used to start the server.
+
   Future<ServerInfo> startServer() async {
     _registerRoutes();
     RoutesHandler.checkRoutes(_registredRoutes);
@@ -43,12 +64,14 @@ class Server {
     return isolateServer(true);
   }
 
+  /// [isolateServer] is a method binds with the server.
   Future<ServerInfo> isolateServer(bool shared) async {
     if (application.applicationConfiguration.securityContext != null) {
       _instance._httpServer = await HttpServer.bindSecure(
           application.applicationConfiguration.host,
           application.applicationConfiguration.port,
-          application.applicationConfiguration.securityContext!);
+          application.applicationConfiguration.securityContext!,
+          shared: shared);
     } else {
       _instance._httpServer = await HttpServer.bind(
           application.applicationConfiguration.host,
@@ -72,9 +95,7 @@ class Server {
             'the requests takes more than the specified timeout');
       });
     }));
-
     _instance._listeningToServer = true;
-
     return _serverInfo;
   }
 
@@ -85,10 +106,10 @@ class Server {
         httpRequest.headers.value("Upgrade") == "websocket") {
       if (WebSocketTransformer.isUpgradeRequest(httpRequest)) {
         WebSocketTransformer.upgrade(httpRequest).then((WebSocket websocket) {
-          UpgradedWebSocket _upgradedWebSocket = UpgradedWebSocket(
+          UpgradedWebSocket upgradedWebSocket = UpgradedWebSocket(
               websocket, httpRequest.headers, httpRequest.uri);
-          _webSocketStream.sink.add(_upgradedWebSocket);
-          _webSocketStreamBroadcast.sink.add(_upgradedWebSocket);
+          _webSocketStream.sink.add(upgradedWebSocket);
+          _webSocketStreamBroadcast.sink.add(upgradedWebSocket);
           return true;
         });
       }
@@ -191,7 +212,6 @@ class Server {
       }
     } else {
       MirrorSystem mirrorSystem = currentMirrorSystem();
-
       mirrorSystem.libraries.forEach((lk, l) {
         l.declarations.forEach((dk, d) {
           if (d is ClassMirror) {
