@@ -7,8 +7,10 @@ environment:
   sdk: ">=2.16.2 <3.0.0"
 
 dependencies:
-  fennec:
-    path: /Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec
+fennec:
+  ^0.0.5
+  # fennec:
+#path: /Users/akramchorfi/Desktop/Fennec Framework/Packages/fennec
 
 dev_dependencies:
   lints: ^1.0.0

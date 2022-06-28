@@ -1,14 +1,17 @@
+import 'dart:io';
+
 import 'package:fennec/fennec.dart';
-import 'package:path/path.dart' as path;
 
 import 'test.dart';
 
 void main(List<String> arguments) async {
-  Application application = Application('0.0.0.0', 8080);
-  application.set('cache', true);
-  application.set('views', path.join(path.current, 'views'));
-  application.addController(Test);
-  application.setNumberOfIsolates(1);
+  ApplicationConfiguration applicationCofiguration = ApplicationConfiguration();
+  applicationCofiguration
+      .addControllers([Test])
+      .setPort(8000)
+      .setHost(InternetAddress.loopbackIPv4);
+
+  Application application = Application(applicationCofiguration);
   Server server = Server(application);
   WebSocketHandler webSocketHandler = WebSocketHandler();
   webSocketHandler.registerWebSocketHandler(server);
@@ -24,5 +27,5 @@ void main(List<String> arguments) async {
   });
   //Send data to all registred Clients
   webSocketHandler.sendToAllJson({'key': 'value'});
-  server.startServer();
+  await server.startServer();
 }

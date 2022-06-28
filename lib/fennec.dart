@@ -15,6 +15,7 @@ import 'package:mime/mime.dart';
 part 'src/annotations/annotations.dart';
 
 part 'src/application.dart';
+part 'src/application_configuration.dart';
 part 'src/body_parser.dart';
 part 'src/exceptions/route_notfound_exception.dart';
 part 'src/exceptions/view_exception.dart';
