@@ -324,7 +324,6 @@ class Server {
 
     List<RestControllerRoutesMapping> matchedPaths =
         RoutesHandler.getMatchedRoute1s(_registredRoutes, path);
-    print(matchedPaths);
 
     if (matchedPaths.isNotEmpty) {
       for (RestControllerRoutesMapping restControllerRoutesMapping
