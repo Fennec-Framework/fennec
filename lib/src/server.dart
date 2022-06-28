@@ -48,7 +48,7 @@ class Server {
 
   /// [startServer] is a method that starts the server.
   /// It's used to start the server.
-  /// re
+
   Future<ServerInfo> startServer() async {
     _registerRoutes();
     RoutesHandler.checkRoutes(_registredRoutes);
@@ -64,12 +64,14 @@ class Server {
     return isolateServer(true);
   }
 
+  /// [isolateServer] is a method binds with the server.
   Future<ServerInfo> isolateServer(bool shared) async {
     if (application.applicationConfiguration.securityContext != null) {
       _instance._httpServer = await HttpServer.bindSecure(
           application.applicationConfiguration.host,
           application.applicationConfiguration.port,
-          application.applicationConfiguration.securityContext!);
+          application.applicationConfiguration.securityContext!,
+          shared: shared);
     } else {
       _instance._httpServer = await HttpServer.bind(
           application.applicationConfiguration.host,
@@ -322,6 +324,7 @@ class Server {
 
     List<RestControllerRoutesMapping> matchedPaths =
         RoutesHandler.getMatchedRoute1s(_registredRoutes, path);
+    print(matchedPaths);
 
     if (matchedPaths.isNotEmpty) {
       for (RestControllerRoutesMapping restControllerRoutesMapping
