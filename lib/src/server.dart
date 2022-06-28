@@ -53,27 +53,37 @@ class Server {
     _registerRoutes();
     RoutesHandler.checkRoutes(_registredRoutes);
 
-    if (_instance.application.numberOfIsolates == 1) {
+    if (_instance.application.applicationConfiguration.numberOfIsolates == 1) {
       return isolateServer(false);
     }
-    for (int i = 1; i < _instance.application.numberOfIsolates; i++) {
+    for (int i = 1;
+        i < _instance.application.applicationConfiguration.numberOfIsolates;
+        i++) {
       Isolate.spawn(isolateServer, true);
     }
     return isolateServer(true);
   }
 
   Future<ServerInfo> isolateServer(bool shared) async {
-    _instance._httpServer = await HttpServer.bind(
-        application.host, application.port,
-        shared: shared);
-    final ServerInfo serverInfo = ServerInfo(
+    if (application.applicationConfiguration.securityContext != null) {
+      _instance._httpServer = await HttpServer.bindSecure(
+          application.applicationConfiguration.host,
+          application.applicationConfiguration.port,
+          application.applicationConfiguration.securityContext!);
+    } else {
+      _instance._httpServer = await HttpServer.bind(
+          application.applicationConfiguration.host,
+          application.applicationConfiguration.port,
+          shared: shared);
+    }
+    final ServerInfo _serverInfo = ServerInfo(
         _instance._httpServer!.address,
         _instance._httpServer!.port,
         _instance._httpServer!.autoCompress,
         _instance._httpServer!.defaultResponseHeaders,
         _instance._httpServer!.idleTimeout,
         _instance._httpServer!.serverHeader);
-    if (_instance._listeningToServer) return serverInfo;
+    if (_instance._listeningToServer) return _serverInfo;
     _instance._httpServer!.listen(((event) async {
       await _parseRequest(event).timeout(
           _instance.requestTimeOut != null
@@ -84,7 +94,7 @@ class Server {
       });
     }));
     _instance._listeningToServer = true;
-    return serverInfo;
+    return _serverInfo;
   }
 
   Future<bool> _parseRequest(HttpRequest httpRequest) async {
@@ -108,8 +118,8 @@ class Server {
   final List<RestControllerRoutesMapping> _registredRoutes = [];
 
   void _registerRoutes() {
-    if (application.controllers.isNotEmpty) {
-      for (Type type in application.controllers) {
+    if (application.applicationConfiguration.controllers.isNotEmpty) {
+      for (Type type in application.applicationConfiguration.controllers) {
         ClassMirror cm = reflectClass(type);
 
         for (var md in cm.metadata) {

@@ -1,3 +1,3 @@
-## 0.0.5
+## 0.0.6
 
-- add Multithreading.
+- add Configuration Class for Application.
