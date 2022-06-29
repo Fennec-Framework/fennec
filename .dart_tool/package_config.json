@@ -3,19 +3,19 @@
   "packages": [
     {
       "name": "lints",
-      "rootUri": "file:///Users/akramchorfi/.pub-cache/hosted/pub.dartlang.org/lints-1.0.1",
+      "rootUri": "file:///C:/Users/Ravi%20Kovind/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/lints-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     },
     {
       "name": "mime",
-      "rootUri": "file:///Users/akramchorfi/.pub-cache/hosted/pub.dartlang.org/mime-1.0.2",
+      "rootUri": "file:///C:/Users/Ravi%20Kovind/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/mime-1.0.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
-      "rootUri": "file:///Users/akramchorfi/.pub-cache/hosted/pub.dartlang.org/path-1.8.2",
+      "rootUri": "file:///C:/Users/Ravi%20Kovind/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/path-1.8.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -26,7 +26,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-06-28T15:49:19.190408Z",
+  "generated": "2022-06-29T06:06:14.067146Z",
   "generator": "pub",
-  "generatorVersion": "2.16.2"
+  "generatorVersion": "2.17.3"
 }
