@@ -78,14 +78,14 @@ class Server {
           application.applicationConfiguration.port,
           shared: shared);
     }
-    final ServerInfo _serverInfo = ServerInfo(
+    final ServerInfo serverInfo = ServerInfo(
         _instance._httpServer!.address,
         _instance._httpServer!.port,
         _instance._httpServer!.autoCompress,
         _instance._httpServer!.defaultResponseHeaders,
         _instance._httpServer!.idleTimeout,
         _instance._httpServer!.serverHeader);
-    if (_instance._listeningToServer) return _serverInfo;
+    if (_instance._listeningToServer) return serverInfo;
     _instance._httpServer!.listen(((event) async {
       await _parseRequest(event).timeout(
           _instance.requestTimeOut != null
@@ -96,7 +96,7 @@ class Server {
       });
     }));
     _instance._listeningToServer = true;
-    return _serverInfo;
+    return serverInfo;
   }
 
   Future<bool> _parseRequest(HttpRequest httpRequest) async {
@@ -123,10 +123,8 @@ class Server {
     if (application.applicationConfiguration.controllers.isNotEmpty) {
       for (Type type in application.applicationConfiguration.controllers) {
         ClassMirror cm = reflectClass(type);
-
         for (var md in cm.metadata) {
           InstanceMirror metadata = md;
-
           if (metadata.reflectee is RestController) {
             String controllerPath = metadata.getField(#path).reflectee;
             InstanceMirror controllerInstanceMirroir =

@@ -50,11 +50,11 @@ class RoutesHandler {
   /// returns [List] of [RestControllerRoutesMapping].
   static List<RestControllerRoutesMapping> getMatchedRoute1s(
       List<RestControllerRoutesMapping> routes, String path) {
-    List<RestControllerRoutesMapping> _routes = [];
+    List<RestControllerRoutesMapping> matchedRoutes = [];
     List<String> pathComponents = path.split("/");
 
     for (RestControllerRoutesMapping routesMapping in routes) {
-      Map<Symbol, ARoute> _routesMap = {};
+      Map<Symbol, ARoute> routesMap = {};
       for (var element in routesMapping.routes.entries) {
         List<String> routeComponents =
             (routesMapping.controllerInstance.controllerPath +
@@ -74,14 +74,14 @@ class RoutesHandler {
           checker = true;
         }
         if (!checker) {
-          _routesMap.addAll({element.key: element.value});
+          routesMap.addAll({element.key: element.value});
         }
       }
-      if (_routesMap.isNotEmpty) {
-        _routes.add(RestControllerRoutesMapping(
-            routesMapping.controllerInstance, _routesMap));
+      if (routesMap.isNotEmpty) {
+        matchedRoutes.add(RestControllerRoutesMapping(
+            routesMapping.controllerInstance, routesMap));
       }
     }
-    return _routes;
+    return matchedRoutes;
   }
 }

@@ -6,6 +6,11 @@ part of fennec;
 class RestController {
   final String path;
   const RestController({required this.path});
+
+  /// [getControllerPath] is used to define a controller path and can be overridden to create own RestController.
+  String getControllerPath() {
+    return path;
+  }
 }
 
 /// @Middleware is an annotation that is used to define a middleware.
