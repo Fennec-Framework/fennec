@@ -123,10 +123,8 @@ class Server {
     if (application.applicationConfiguration.controllers.isNotEmpty) {
       for (Type type in application.applicationConfiguration.controllers) {
         ClassMirror cm = reflectClass(type);
-
         for (var md in cm.metadata) {
           InstanceMirror metadata = md;
-
           if (metadata.reflectee is RestController) {
             String controllerPath = metadata.getField(#path).reflectee;
             InstanceMirror controllerInstanceMirroir =
