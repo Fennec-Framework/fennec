@@ -246,6 +246,10 @@ ApplicationConfiguration applicationCofiguration = ApplicationConfiguration();
 
 after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports), we could gets this data:
 
+- t: number of threads
+- c: number of open connections
+- d: duration of test
+
 ```dart
  @Route('/test', RequestMethod.get())
   Future test(Request request, Response response) async {
@@ -254,30 +258,33 @@ after running this endpoint using Fennec Framework on local machine (MacBook Pro
   
   ```
 
-wrk -t1  -c100 -d60s http://localhost:8000/example/test
-Running 1m test @ http://localhost:8000/example/test
-  1 threads and 100 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     6.63ms    1.83ms  86.51ms   96.81%
-    Req/Sec    15.30k     1.38k   16.52k    91.17%
-  913472 requests in 1.00m, 177.72MB read
-Requests/sec:  15209.67
-Transfer/sec:      2.96MB
+**wrk -t1  -c100 -d60s http://localhost:8000/example/test**
+- Running 1m test @ http://localhost:8000/example/test
+-  1 threads and 100 connections
+-  Thread Stats   Avg      Stdev     Max   +/- Stdev
+-   Latency     6.63ms    1.83ms  86.51ms   96.81%
+-    Req/Sec    15.30k     1.38k   16.52k    91.17%
+- 913472 requests in 1.00m, 177.72MB read
+- Requests/sec:  15209.67
+- Transfer/sec:      2.96MB
 
 
-wrk -t10  -c100 -d60s http://localhost:8000/example/test
-Running 1m test @ http://localhost:8000/example/test
-  10 threads and 100 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     6.50ms    1.27ms 104.08ms   96.71%
-    Req/Sec     1.55k   124.24     2.41k    87.15%
-  926903 requests in 1.00m, 180.33MB read
-Requests/sec:  15435.91
-Transfer/sec:      3.00MB
+**wrk -t10  -c100 -d60s http://localhost:8000/example/test**
+- Running 1m test @ http://localhost:8000/example/test
+- 10 threads and 100 connections
+-  Thread Stats   Avg      Stdev     Max   +/- Stdev
+-    Latency     6.50ms    1.27ms 104.08ms   96.71%
+-   Req/Sec     1.55k   124.24     2.41k    87.15%
+-  926903 requests in 1.00m, 180.33MB read
+-  Requests/sec:  15435.91
+- Transfer/sec:      3.00MB
 
-t: number of threads
-c: number of open connections
-d: duration of test
+
+
+
+
+
+
 
 
 
