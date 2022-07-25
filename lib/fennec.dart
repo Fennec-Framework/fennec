@@ -5,11 +5,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
-import 'dart:mirrors';
 
-import 'package:fennec/src/annotations/controller_instance.dart';
-import 'package:fennec/src/annotations/middlware_annotation_entity.dart';
-import 'package:fennec/src/annotations/restcontroller_routes_mapping.dart';
 import 'package:path/path.dart' as path;
 import 'package:mime/mime.dart';
 
@@ -33,6 +29,7 @@ part 'src/websocket/upgraded_websocket.dart';
 part 'src/request.dart';
 part 'src/response.dart';
 part 'src/route/route.dart';
+part 'src/route/router.dart';
 part 'src/route/route_handler.dart';
 part 'src/request_method.dart';
 part 'src/server_info.dart';

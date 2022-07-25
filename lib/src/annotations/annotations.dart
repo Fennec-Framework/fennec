@@ -23,9 +23,9 @@ class Middleware {
   const Middleware({this.priority = 0});
 }
 
-/// [MiddlwareHandler] of type [T] is a abstract class that is used to define a middlware handler.
-abstract class MiddlwareHandler<T> {
-  const MiddlwareHandler();
+/// [AMiddlwareHandler] of type [T] is a abstract class that is used to define a middlware handler.
+abstract class AMiddlwareHandler<T> {
+  const AMiddlwareHandler();
 }
 
 /// [UserProvider] is a abstract class that is used to define a user provider.

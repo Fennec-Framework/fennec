@@ -51,7 +51,7 @@ class Server {
 
   Future<ServerInfo> startServer() async {
     _registerRoutes();
-    RoutesHandler.checkRoutes(_registredRoutes);
+    RoutesHandler.checkRoutes(registredRoutes);
 
     if (_instance.application.applicationConfiguration.numberOfIsolates == 1) {
       return isolateServer(false);
@@ -117,9 +117,55 @@ class Server {
     return true;
   }
 
-  final List<RestControllerRoutesMapping> _registredRoutes = [];
+  Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
+    final String path = httpRequest.uri.path;
+    final String method = httpRequest.method;
+    List<Route> matchedPaths =
+        RoutesHandler.getMatchedRoutes(registredRoutes, path);
+    if (matchedPaths.isNotEmpty) {
+      for (Route route in matchedPaths) {
+        if (route.requestMethod.requestMethod == method) {
+          Map<String, dynamic>? pathParams = RoutesHandler.pathMatcher(
+              routePath: route.path, matchesPath: path);
+          Request request = await BodyParser.parseBody(httpRequest, pathParams);
+          Response response = Response(httpRequest.response, application);
+          List<MiddlewareHandler> middlewares = route.middlewares;
+          for (MiddlewareHandler middlewareHandler in middlewares) {
+            final MiddleWareResponse middleWareResponse =
+                await middlewareHandler(request, response);
+            if (middleWareResponse.value == MiddleWareResponseEnum.stop) {
+              return true;
+            }
+          }
+          await route.requestHandler(request, response);
+          return true;
+        }
+      }
+      methodNotAllowedException(httpRequest.response, path, method);
+      return true;
+    } else {
+      routeNotFoundException(httpRequest.response, path, method);
+      return true;
+    }
+  }
 
+  // final List<RestControllerRoutesMapping> _registredRoutes = [];
+  final List<Route> registredRoutes = [];
   void _registerRoutes() {
+    registredRoutes.addAll(application.applicationConfiguration.routes);
+    for (Router router in application.applicationConfiguration.routers) {
+      for (Route route in router.routes) {
+        String composedPath = router.getRoutePath() + route.path;
+        registredRoutes.add(Route(
+            requestMethod: route.requestMethod,
+            path: composedPath,
+            requestHandler: route.requestHandler,
+            middlewares: route.middlewares));
+      }
+    }
+  }
+
+  /*void _registerRoutes() {
     if (application.applicationConfiguration.controllers.isNotEmpty) {
       for (Type type in application.applicationConfiguration.controllers) {
         ClassMirror cm = reflectClass(type);
@@ -313,9 +359,9 @@ class Server {
         });
       });
     }
-  }
+  }*/
 
-  Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
+  /*Future<bool> handleHttpRequest1(HttpRequest httpRequest) async {
     final String path = httpRequest.uri.path;
 
     final String method = httpRequest.method;
@@ -440,5 +486,5 @@ class Server {
       return true;
     }
     return true;
-  }
+  }*/
 }

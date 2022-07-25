@@ -1,18 +1,18 @@
 part of fennec;
 
-/// [CallBackRequest] is a [typedef] that is used to define a callback for a request.
+/// [RequestHandler] is a [typedef] that is used to define a callback for a request.
 /// [req] is a [Request] that is the request.
 /// [res] is a [Response] that is the response.
 ///
 /// returns [FutureOr] of [void].
-typedef CallBackRequest = FutureOr Function(Request req, Response res);
+typedef RequestHandler = FutureOr Function(Request req, Response res);
 
-/// [MiddleWareRequest] is a [typedef].
+/// [MiddlewareHandler] is a [typedef].
 /// [req] is a [Request] that is the request.
 /// [res] is a [Response] that is the response.
 ///
 /// returns [FutureOr] of [MiddleWareResponse].
-typedef MiddleWareRequest = FutureOr<MiddleWareResponse> Function(
+typedef MiddlewareHandler = FutureOr<MiddleWareResponse> Function(
     Request req, Response res);
 
 /// [RouteNotFoundException] is a [typedef].

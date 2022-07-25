@@ -1,4 +1,4 @@
-import 'package:fennec/fennec.dart';
+/*import 'package:fennec/fennec.dart';
 
 import 'controller_instance.dart';
 
@@ -12,4 +12,4 @@ class RestControllerRoutesMapping {
 
   /// [RestControllerRoutesMapping] is a constructor that is used to define a rest controller routes mapping.
   const RestControllerRoutesMapping(this.controllerInstance, this.routes);
-}
+}*/
