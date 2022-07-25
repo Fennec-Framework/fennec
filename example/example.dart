@@ -20,7 +20,15 @@ void main(List<String> arguments) async {
       requestHandler: (Request req, Response res) {
         res.ok().send('show received');
       },
-      middlewares: []));
+      middlewares: [
+        (req, res) {
+          if (1 == 2) {
+            return MiddleWareResponse(MiddleWareResponseEnum.next);
+          }
+          res.forbidden().send('not allowed');
+          return MiddleWareResponse(MiddleWareResponseEnum.stop);
+        }
+      ]));
 
   Application application = Application(applicationCofiguration);
   Server server = Server(application);
@@ -50,5 +58,10 @@ class TestRouter extends Router {
 class TestController {
   void test(Request request, Response response) {
     response.ok().send('hellow world');
+  }
+
+  Future<MiddleWareResponse> testMiddleware(Request req, Response res) async {
+    res.html("You are not allowed to do that");
+    return MiddleWareResponse(MiddleWareResponseEnum.stop);
   }
 }
