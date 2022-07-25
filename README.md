@@ -19,126 +19,62 @@
 
 # make your first request:
 
-create your First RestController:
+create your First Router:
 
 ```dart
-@RestController(path: '/example')
-class Test {
-  @Route('/test', RequestMethod.get())
-  Future test(Request request, Response response) async {
-    response.send('hello world');
-  }
-
-  @AuthenticatedRoute('/template', RequestMethod.get(), MiddlewareHanlderImpl())
-  Future testMiddleWare(Request request, Response response) async {
-    response.render('template.html');
-  }
-
-  @AuthorizatedRoute('/authorization', RequestMethod.get(),
-      MiddlewareHanlderImpl(), ['ADMIN'], UserProviderImpl())
-  Future testAuthorization(Request request, Response response) async {
-    response.render('template.html');
+class TestRouter extends Router {
+  @override
+  String getRoutePath() {
+    return '/Test';
   }
 }
 
 ```
 
-**Fennec Framework** has three types of Routing:
+create your First Controller:
 
-- **Route** is simple Route without any post executions or middlewares before the request will be executed.
-- **AuthenticatedRoute** is a Route that required also a milldware class where the deveveloper can define all Operations and Middlwares (for example authenticate the token) that must be executed before the request will be executed.
-- **AuthorizatedRoute** is a Route that required also a milldware and class for Authorizate the user and a List of Roles of user that can use this request.
-  this Route will typically used for softwares with many roles of users.
+```dart
+class TestController {
+  void test(Request request, Response response) {
+    response.ok().send('hellow world');
+  }
+}
+```
+
+call your Router and Controller
+
+```dart
+  TestRouter testRouter = TestRouter();
+  testRouter.get(
+      path: '/simple', requestHandler: TestController().test, middlewares: []);
+  testRouter.get(
+      path: '/simple1',
+      requestHandler: (Request req, Response res) {
+        res.send(req.body);
+      },
+      middlewares: []);
+  applicationCofiguration.addRouter(testRouter);
+  applicationCofiguration.addRoute(Route(
+      path: '/show',
+      requestMethod: RequestMethod.get(),
+      requestHandler: (Request req, Response res) {
+        res.ok().send('show received');
+      },
+      middlewares: []));
+
+
+```
 
 ## Middleware
 
-it must be a subtype of the class **MiddlewareHandler** , here an example how to implement it:
+it must be a typedef **MiddlewareHandler** and must return always **MiddleWareResponse**. here an example how to implement it:
 
 ```dart
-class MiddlewareHanlderImpl extends MiddlewareHandler<MiddlewareHanlderImpl> {
-  const MiddlewareHanlderImpl();
-  @Middleware(priority: 0)
-  Future<MiddleWareResponse> test(Request request, Response response) async {
-    if (1 == 1) {
-      return MiddleWareResponse(MiddleWareResponseEnum.next);
-    }
-    response.badRequest().send('not allowed second');
+ Future<MiddleWareResponse> testMiddleware(Request req, Response res) async {
+    res.html("You are not allowed to do that");
     return MiddleWareResponse(MiddleWareResponseEnum.stop);
   }
 
-  @Middleware(priority: 1)
-  Future<MiddleWareResponse> test1(Request request, Response response) async {
-    if (1 == 1) {
-      return MiddleWareResponse(MiddleWareResponseEnum.next);
-    }
-    response.badRequest().send('not allowed first ');
-    return MiddleWareResponse(MiddleWareResponseEnum.stop);
-  }
-}
-
-```
-
-every Middlware inside the class must be annotated with @Middleware() and have this signature Future<MiddleWareResponse> 'methodname'(Request request, Response response). the middlware can also without async implemented. priority is for determining which Middlware should be firtly executed.
-higher Priority will be first executed.
-
-## UserProvider
-
-UserProvider is an interface that contains the function loadUser based and the request data and Roles used on the **AuthorizatedRoute**
-
-Example of implementation of **UserProvider**
-
-```dart
-class UserProviderImpl extends UserProvider {
-  const UserProviderImpl();
-  @override
-  @AuthorizationRequired()
-  Future<UserDetails?> loadUser(
-      Request request, Response response, List<String> roules) async {
-    if (!roules.contains('element')) {
-      response.forbidden().send('not allowed');
-      return null;
-    }
-    return UserDetailsImpl(1, 'tester', '1@web.de', '123456', []);
-  }
-
-```
-
-```dart
-class UserDetailsImpl extends UserDetails {
-  UserDetailsImpl(id, String username, String email, String password,
-      Iterable<Object> authorities)
-      : super(id, username, email, password, authorities);
-
-  @override
-  UserDetails fromJson(Map<String, dynamic> map) {
-    // TODO: implement fromJson
-    throw UnimplementedError();
-  }
-
-  @override
-  bool isAccountNonExpired() {
-    // TODO: implement isAccountNonExpired
-    throw UnimplementedError();
-  }
-
-  @override
-  bool isAccountNonLocked() {
-    // TODO: implement isAccountNonLocked
-    throw UnimplementedError();
-  }
-
-  @override
-  bool isCredentialsNonExpired() {
-    // TODO: implement isCredentialsNonExpired
-    throw UnimplementedError();
-  }
-
-  @override
-  bool isEnabled() {
-    // TODO: implement isEnabled
-    throw UnimplementedError();
-  }
-}
 
 ```
 
@@ -147,7 +83,7 @@ class UserDetailsImpl extends UserDetails {
 here is an example hot to use dynamic routes
 
 ```dart
-@Route('/dynamic_route/@user_id/@doc_id', RequestMethod.get())
+
 Future dynamicRoutes(Request request, Response response) async {
     response.json({
       'userId': request.pathParams!['user_id'],
@@ -163,7 +99,7 @@ an example how to handle files
 
 ```dart
 
-@Route('/files', RequestMethod.get())
+
 Future fileSystems(Request request, Response response) async {
     response.json({
       'file1': request.files.first.toString(),
@@ -238,11 +174,7 @@ ApplicationConfiguration applicationCofiguration = ApplicationConfiguration();
 
 - for next days, another example for aws and goolge run will be uploaded.
 
-
-
 # Benchmarks using [wrk](https://github.com/wg/wrk)
-
-
 
 after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports), we could gets this data:
 
@@ -255,39 +187,36 @@ after running this endpoint using Fennec Framework on local machine (MacBook Pro
   Future test(Request request, Response response) async {
     response.send('hello world');
   }
-  
-  ```
 
-**wrk -t1  -c100 -d60s http://localhost:8000/example/test**
+```
+
+**wrk -t1 -c100 -d60s http://localhost:8000/example/test**
+
 - Running 1m test @ http://localhost:8000/example/test
--  1 threads and 100 connections
--  Thread Stats   Avg      Stdev     Max   +/- Stdev
--   Latency     6.63ms    1.83ms  86.51ms   96.81%
--    Req/Sec    15.30k     1.38k   16.52k    91.17%
+- 1 threads and 100 connections
+- Thread Stats Avg Stdev Max +/- Stdev
+- Latency 6.63ms 1.83ms 86.51ms 96.81%
+- Req/Sec 15.30k 1.38k 16.52k 91.17%
 - 913472 requests in 1.00m, 177.72MB read
-- Requests/sec:  15209.67
-- Transfer/sec:      2.96MB
+- Requests/sec: 15209.67
+- Transfer/sec: 2.96MB
 
+**wrk -t10 -c100 -d60s http://localhost:8000/example/test**
 
-**wrk -t10  -c100 -d60s http://localhost:8000/example/test**
 - Running 1m test @ http://localhost:8000/example/test
 - 10 threads and 100 connections
--  Thread Stats   Avg      Stdev     Max   +/- Stdev
--    Latency     6.50ms    1.27ms 104.08ms   96.71%
--   Req/Sec     1.55k   124.24     2.41k    87.15%
--  926903 requests in 1.00m, 180.33MB read
--  Requests/sec:  15435.91
-- Transfer/sec:      3.00MB
+- Thread Stats Avg Stdev Max +/- Stdev
+- Latency 6.50ms 1.27ms 104.08ms 96.71%
+- Req/Sec 1.55k 124.24 2.41k 87.15%
+- 926903 requests in 1.00m, 180.33MB read
+- Requests/sec: 15435.91
+- Transfer/sec: 3.00MB
 
+## import information
 
+Fennec Framework after with version >= 1.0.0 doesn't support more annotations because the big discussions about the library mirrors. as alernatives you can use Route or Route as showed in this example.
 
-
-
-
-
-
-
-
+> > > > > > > dev
 
 # License
 
