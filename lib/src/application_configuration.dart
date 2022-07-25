@@ -23,9 +23,27 @@ class ApplicationConfiguration {
   /// [numberOfIsolates] is a [int] that contains the number of isolates of the application.
   int numberOfIsolates = 1;
   final List<Type> controllers = [];
+  final List<Router> routers = [];
+  final List<Route> routes = [];
+
+  /// [addRouter] is a method that adds a new Router to the application.
+  /// [router] is a [Router] that contains the router.
+  ApplicationConfiguration addRouter(Router router) {
+    routers.add(router);
+    return this;
+  }
+
+  /// [addRoute] is a method that adds a new Route to the application.
+  /// [route] is a [Route] that contains the route.
+  ApplicationConfiguration addRoute(Route route) {
+    routes.add(route);
+    return this;
+  }
 
   /// [addController] is a method that adds a new controller to the application.
   /// [controller] is a [Type] that contains the controller.
+  @Deprecated(
+      'this method is not more supported . use for this goal addRoute or addRouter')
   ApplicationConfiguration addController(Type controller) {
     controllers.add(controller);
     return this;

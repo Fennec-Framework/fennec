@@ -1,4 +1,4 @@
-import 'dart:mirrors';
+/*import 'dart:mirrors';
 
 /// [ControllerInstance] is a class that is used to define a controller instance.
 class ControllerInstance {
@@ -11,3 +11,4 @@ class ControllerInstance {
   /// [ControllerInstance] is a constructor that is used to define a controller instance.
   const ControllerInstance(this.controllerPath, this.instanceMirror);
 }
+*/

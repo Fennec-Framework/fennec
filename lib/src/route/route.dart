@@ -1,4 +1,4 @@
-part of fennec;
+/*part of fennec;
 
 /// [ARoute] is a abstract class that is used to create pre-defined types of route.
 abstract class ARoute {
@@ -20,9 +20,9 @@ class Route extends ARoute {
 /// [AuthenticatedRoute] is a class that is used to define a route that requires
 /// authentication.
 ///
-/// [middlwareHandler] is a [MiddlwareHandler] that contains the authentication middlware.
+/// [middlwareHandler] is a [AMiddlwareHandler] that contains the authentication middlware.
 class AuthenticatedRoute extends ARoute {
-  final MiddlwareHandler middlwareHandler;
+  final AMiddlwareHandler middlwareHandler;
   const AuthenticatedRoute(
       String path, RequestMethod method, this.middlwareHandler)
       : super(path, method);
@@ -31,14 +31,14 @@ class AuthenticatedRoute extends ARoute {
 /// [AuthorizatedRoute] is a class that is used to define a route that requires
 /// authorization.
 ///
-/// [middlwareHandler] is a [MiddlwareHandler] that contains the authorization middlware.
+/// [middlwareHandler] is a [AMiddlwareHandler] that contains the authorization middlware.
 ///
 /// [roles] is a [List] of [String] that contains the roles.
 ///
 /// [userProvider] is a [UserProvider] that contains the user provider.
 ///
 class AuthorizatedRoute extends ARoute {
-  final MiddlwareHandler middlwareHandler;
+  final AMiddlwareHandler middlwareHandler;
   final List<String> roles;
   final UserProvider userProvider;
   const AuthorizatedRoute(
@@ -48,4 +48,19 @@ class AuthorizatedRoute extends ARoute {
     this.roles,
     this.userProvider,
   ) : super(path, method);
+}
+*/
+part of fennec;
+
+class Route {
+  final RequestMethod requestMethod;
+  final String path;
+  final RequestHandler requestHandler;
+  final List<MiddlewareHandler> middlewares;
+
+  Route(
+      {required this.requestMethod,
+      required this.path,
+      required this.requestHandler,
+      required this.middlewares});
 }
