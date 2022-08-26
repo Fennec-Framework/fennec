@@ -1,7 +1,7 @@
 part of fennec;
 
 class Utils {
-  /// [isValidURl] a static method to check validity of requested uri
+  /// [isValidURl] a static method to check validity of requested uri.
   static bool isValidURl(String url) {
     if (Uri.tryParse(url) == null || !Uri.tryParse(url)!.hasAbsolutePath) {
       return false;
