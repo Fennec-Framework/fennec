@@ -119,11 +119,30 @@ class Server {
   }
 
   Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
+    _unawaited(httpRequest.response.done.then((dynamic _) {
+      return true;
+    }));
     final String path = httpRequest.uri.path;
     final String method = httpRequest.method;
     if (!Utils.isValidURl(httpRequest.requestedUri.toString())) {
       badRequestException(httpRequest.response, 'Invalid URL');
       return true;
+    }
+    Request request = await BodyParser.parseBody(httpRequest, {});
+    Response response = Response(httpRequest.response, application);
+    if (application.cors != null) {
+      var corsCallback = application.cors!;
+      final isOptionsMethod = await corsCallback(request, response);
+      if (isOptionsMethod == null) {
+        return true;
+      }
+    } else if (application.corsOptions != null) {
+      var corsCallback = cors(application.corsOptions!);
+      final isOptionsMethod = await corsCallback(request, response);
+
+      if (isOptionsMethod == null) {
+        return true;
+      }
     }
     List<Route> matchedPaths =
         RoutesHandler.getMatchedRoutes(registredRoutes, path);
@@ -132,13 +151,12 @@ class Server {
         if (route.requestMethod.requestMethod == method) {
           Map<String, dynamic> pathParams = RoutesHandler.pathMatcher(
               routePath: route.path, matchesPath: path);
-          Request request = await BodyParser.parseBody(httpRequest, pathParams);
-          Response response = Response(httpRequest.response, application);
+          request.pathParams = pathParams;
           List<MiddlewareHandler> middlewares = route.middlewares;
           for (MiddlewareHandler middlewareHandler in middlewares) {
-            final MiddleWareResponse middleWareResponse =
+            final Next? middleWareResponse =
                 await middlewareHandler(request, response);
-            if (middleWareResponse.value == MiddleWareResponseEnum.stop) {
+            if (middleWareResponse == null) {
               return true;
             }
           }
@@ -173,4 +191,6 @@ class Server {
       }
     }
   }
+
+  void _unawaited(Future then) {}
 }

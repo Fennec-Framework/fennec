@@ -1,3 +1,7 @@
+## 1.0.7
+
+- implement support and customize of CORS
+
 ## 1.0.6
 
 - check validity of requested uri

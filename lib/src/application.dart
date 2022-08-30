@@ -8,6 +8,9 @@ class Application {
   /// [_engines] is a [Map] that contains the engines of the application.
   final Map<String, Engine> _engines = {};
 
+  CorsOptions? corsOptions;
+  CorsCallback? cors;
+
   /// instance of [Application] that contains the application.
   static final Application _instance = Application._internal();
 
@@ -148,6 +151,16 @@ class Application {
 
   Application useWebSocket(bool useWebSocket) {
     webSocket = useWebSocket;
+    return this;
+  }
+
+  Application setCorsOptions(CorsOptions corsOptions) {
+    this.corsOptions = corsOptions;
+    return this;
+  }
+
+  Application setCors(CorsCallback cors) {
+    this.cors = cors;
     return this;
   }
 

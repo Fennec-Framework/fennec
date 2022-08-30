@@ -4,7 +4,22 @@ import 'package:path/path.dart' as path;
 
 void main(List<String> arguments) async {
   Application application = Application();
-  application.setPort(8000).setHost(InternetAddress.loopbackIPv4);
+  application.setPort(3114).setHost(InternetAddress.loopbackIPv4);
+  application
+      .setCorsOptions(CorsOptions(methods: "PUT,GET,DELETE", origin: '*'));
+  application.setCors((req, res) {
+    var x = CorsOptions(methods: "PUT,GET,DELETE", origin: '*');
+    res.headers.add('a', x.headers);
+    res.headers.add('Access-Control-Allow-Origin', x.origin);
+    res.headers.add('Access-Control-Allow-Methods', x.methods);
+    res.headers.add('Access-Control-Allow-Headers', x.headers);
+    res.headers.add('Access-Control-Expose-Headers', x.headers);
+    if (req.httpRequest.method == 'OPTIONS') {
+      res.close();
+      return null;
+    }
+    return Next();
+  });
   application.setViewPath(path.current);
   application.get(
     path: '/dynamic_routes/@userId',
@@ -16,10 +31,10 @@ void main(List<String> arguments) async {
   Router testRouter = Router(routerPath: '/Test');
   testRouter.useMiddleware((req, res) {
     if (1 == 1) {
-      return MiddleWareResponse(MiddleWareResponseEnum.next);
+      return null;
     }
     res.forbidden().send('sddd');
-    return MiddleWareResponse(MiddleWareResponseEnum.stop);
+    return Next();
   });
 
   testRouter.get(path: '/simple', requestHandler: TestController().test);
@@ -33,17 +48,16 @@ void main(List<String> arguments) async {
 
   application.addRoute(Route(
       path: '/show',
-      requestMethod: RequestMethod.get(),
+      requestMethod: RequestMethod.delete(),
       requestHandler: (Request req, Response res) {
-        res.ok().send('show received');
+        res.ok().json({'aaÄ': 'show received'});
       },
       middlewares: [
         (req, res) {
           if (1 == 2) {
-            return MiddleWareResponse(MiddleWareResponseEnum.next);
+            return Next();
           }
-          res.forbidden().send('not allowed');
-          return MiddleWareResponse(MiddleWareResponseEnum.stop);
+          res.forbidden().json({'ss': 'not allowed'});
         }
       ]));
 

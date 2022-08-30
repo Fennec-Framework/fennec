@@ -11,9 +11,13 @@ typedef RequestHandler = FutureOr Function(Request req, Response res);
 /// [req] is a [Request] that is the request.
 /// [res] is a [Response] that is the response.
 ///
+
 /// returns [FutureOr] of [MiddleWareResponse].
+/*
 typedef MiddlewareHandler = FutureOr<MiddleWareResponse> Function(
-    Request req, Response res);
+    Request req, Response res);*/
+/// returns [FutureOr] of [Next].
+typedef MiddlewareHandler = FutureOr<Next?> Function(Request req, Response res);
 
 /// [RouteNotFoundException] is a [typedef].
 /// [response] is a [Response] that is the response.
@@ -38,3 +42,5 @@ typedef EngineHandler = Function(
 /// [authenticationProvider] is a [AuthenticationProvider] that is the authentication provider.
 typedef MiddleWareRequestByLoadUser = FutureOr<UserDetails?> Function(
     Request req, Response res, AuthenticationProvider authenticationProvider);
+typedef CorsCallback = FutureOr<Next?> Function(
+    Request request, Response response);
