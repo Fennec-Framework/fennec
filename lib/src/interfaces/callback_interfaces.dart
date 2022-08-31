@@ -12,7 +12,6 @@ typedef RequestHandler = FutureOr Function(Request req, Response res);
 /// [res] is a [Response] that is the response.
 ///
 
-/// returns [FutureOr] of [MiddleWareResponse].
 /*
 typedef MiddlewareHandler = FutureOr<MiddleWareResponse> Function(
     Request req, Response res);*/

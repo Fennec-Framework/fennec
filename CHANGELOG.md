@@ -1,3 +1,7 @@
+## 1.0.8
+
+- fix bugs
+
 ## 1.0.7
 
 - implement support and customize of CORS

@@ -58,6 +58,7 @@ void main(List<String> arguments) async {
             return Next();
           }
           res.forbidden().json({'ss': 'not allowed'});
+          return null;
         }
       ]));
 
@@ -83,8 +84,8 @@ class TestController {
     response.ok().json(request.params);
   }
 
-  Future<MiddleWareResponse> testMiddleware(Request req, Response res) async {
+  Future<Next?> testMiddleware(Request req, Response res) async {
     res.html("You are not allowed to do that");
-    return MiddleWareResponse(MiddleWareResponseEnum.stop);
+    return Next();
   }
 }
