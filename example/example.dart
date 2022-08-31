@@ -8,7 +8,7 @@ void main(List<String> arguments) async {
   application
       .setCorsOptions(CorsOptions(methods: "PUT,GET,DELETE", origin: '*'));
   application.setCors((req, res) {
-    var x = CorsOptions(methods: "PUT,GET,DELETE", origin: '*');
+    CorsOptions x = CorsOptions(methods: "PUT,GET,DELETE", origin: '*');
     res.headers.add('a', x.headers);
     res.headers.add('Access-Control-Allow-Origin', x.origin);
     res.headers.add('Access-Control-Allow-Methods', x.methods);
