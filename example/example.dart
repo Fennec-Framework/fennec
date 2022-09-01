@@ -9,7 +9,7 @@ void main(List<String> arguments) async {
   application.setPort(3114).setHost(InternetAddress.loopbackIPv4);
   application
       .setCorsOptions(CorsOptions(methods: "PUT,GET,DELETE", origin: '*'));
-  application.use((req, res) {
+  application.useMiddleware((req, res) {
     CorsOptions x = CorsOptions(methods: "PUT,GET,DELETE", origin: '*');
     res.headers.set('Access-Control-Allow-Origin', x.origin);
     res.headers.set('Access-Control-Allow-Methods', x.methods);

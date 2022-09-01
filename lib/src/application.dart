@@ -166,8 +166,8 @@ class Application {
     return this;
   }
 
-  /// [use] is used to defines middlewares, that will be executed after every request.
-  Application use(MiddlewareHandler middlewareHandler) {
+  /// [useMiddleware] is used to defines middlewares, that will be executed after every request.
+  Application useMiddleware(MiddlewareHandler middlewareHandler) {
     middlewares.add(middlewareHandler);
     return this;
   }
