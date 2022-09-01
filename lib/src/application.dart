@@ -18,16 +18,21 @@ class Application {
   factory Application() {
     return _instance;
   }
+
   Application._internal();
 
   /// [render] is a method that renders a view.
-  void render(
-    String fileName,
-    Map<String, dynamic>? locals,
-    Function(dynamic, String?) callback,
-  ) {
+  void render(String fileName, Map<String, dynamic>? locals,
+      Function(dynamic, String?) callback,
+      {Map<String, dynamic> parameters = const {}}) {
     final view = _getViewFromFileName(fileName);
-    view.render(locals, callback);
+    view.render(locals, parameters, callback);
+  }
+
+  /// [renderHtmlAsString] is a method that renders a html file by a String.
+  String renderHtmlAsString(String html,
+      {Map<String, dynamic> parameters = const {}}) {
+    return HtmlEngine.renderHtmlAsString(html, parameters: parameters);
   }
 
   View _getViewFromFileName(String fileName) {

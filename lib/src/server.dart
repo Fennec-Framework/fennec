@@ -38,11 +38,14 @@ class Server {
   final StreamController<UpgradedWebSocket> _webSocketStream =
       StreamController();
   final StreamController<HttpRequest> httpServerStream = StreamController();
+
   StreamController<UpgradedWebSocket> get webSocketStream => _webSocketStream;
   final StreamController<UpgradedWebSocket> _webSocketStreamBroadcast =
       StreamController();
+
   StreamController<UpgradedWebSocket> get webSocketStreamBroadcast =>
       _webSocketStreamBroadcast;
+
   HttpServer get httpServer => _instance._httpServer == null
       ? throw Exception("you should start first")
       : _instance._httpServer!;
@@ -129,7 +132,7 @@ class Server {
       return true;
     }
     Request request = await BodyParser.parseBody(httpRequest, {});
-    Response response = Response(httpRequest.response, application);
+    Response response = Response(httpRequest.response, application, method);
     if (application.cors != null) {
       var corsCallback = application.cors!;
       final isOptionsMethod = await corsCallback(request, response);
@@ -174,6 +177,7 @@ class Server {
 
   // final List<RestControllerRoutesMapping> _registredRoutes = [];
   final List<Route> registredRoutes = [];
+
   void _registerRoutes() {
     registredRoutes.addAll(application.routes);
     for (Router router in application.routers) {

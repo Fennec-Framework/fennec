@@ -50,12 +50,13 @@ class View {
       filePath = lookup(fileName);
     }
   }
-  void render(Map<String, dynamic>? options,
+
+  void render(Map<String, dynamic>? options, Map<String, dynamic>? parameters,
       Function(dynamic e, String? rendered) callback) {
     if (filePath == null) {
-      engine!.engineHandler(rootPath + name, options, callback);
+      engine!.engineHandler(rootPath + name, options, callback, parameters);
     } else {
-      engine!.engineHandler(filePath!, options, callback);
+      engine!.engineHandler(filePath!, options, callback, parameters);
     }
   }
 

@@ -1,3 +1,6 @@
+## 1.0.9
+
+- send data to html templates as parameters
 ## 1.0.8
 
 - fix bugs

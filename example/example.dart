@@ -3,6 +3,8 @@ import 'package:fennec/fennec.dart';
 import 'package:path/path.dart' as path;
 
 void main(List<String> arguments) async {
+  String html =
+      '<script> function bar() { var myList = []; for (i = 0; i < aa.test1.length; i++) { var li = document.createElement("li");var text = document.createTextNode(i);li.appendChild(text);document.getElementById("myUl").appendChild(li);}}window.onload = event => {console.log(event);bar();};</script><h1>aa</h1> <button onclick="bar()">click</button><ul id="myUl"></ul>';
   Application application = Application();
   application.setPort(3114).setHost(InternetAddress.loopbackIPv4);
   application
@@ -24,6 +26,7 @@ void main(List<String> arguments) async {
   application.get(
     path: '/dynamic_routes/@userId',
     requestHandler: (req, res) {
+      res.render('s');
       res.json({'userId': req.pathParams['userId']});
     },
   );
@@ -48,13 +51,16 @@ void main(List<String> arguments) async {
 
   application.addRoute(Route(
       path: '/show',
-      requestMethod: RequestMethod.delete(),
+      requestMethod: RequestMethod.get(),
       requestHandler: (Request req, Response res) {
-        res.ok().json({'aaÄ': 'show received'});
+        res.render('not_found.html', parameters: {
+          "sasd": 123,
+          'tester': ["aa11", "sdwsd",11]
+        });
       },
       middlewares: [
         (req, res) {
-          if (1 == 2) {
+          if (2 == 2) {
             return Next();
           }
           res.forbidden().json({'ss': 'not allowed'});

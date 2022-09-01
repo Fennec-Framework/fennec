@@ -9,8 +9,11 @@ class Response {
   /// [_application] is a [Application] that contains the application of the server.
   final Application _application;
 
+  ///[method] defines which method has the request
+  final String method;
+
   /// constructor that creates a new [Response] object.
-  Response(this._response, this._application);
+  Response(this._response, this._application, this.method);
 
   /// [send] is a method that sends the response.
   /// It's used to send the response.
@@ -29,7 +32,14 @@ class Response {
   /// It's used to render the response.
   /// [viewName] is a [String] that contains the name of the view.
   /// [locals] is a [Map] that contains the locals. by default it's null.
-  void render(String viewName, [Map<String, dynamic>? locals]) {
+  void render(String viewName,
+      {Map<String, dynamic>? locals,
+      Map<String, dynamic> parameters = const {}}) {
+    if (method.toUpperCase() != 'GET') {
+      badRequestException(
+          _response, 'Only GET method is allowed to render html templates');
+      return;
+    }
     _application.render(viewName, locals, (err, data) {
       if (err != null) {
         _response
@@ -38,13 +48,23 @@ class Response {
           ..close();
         return;
       }
-
       html(data!);
-    });
+    }, parameters: parameters);
+  }
+
+  void renderHtmlAsString(String htmlInput,
+      {Map<String, dynamic> parameters = const {}}) {
+    if (method.toUpperCase() != 'GET') {
+      badRequestException(
+          _response, 'Only GET method is allowed to render html templates');
+      return;
+    }
+    var data =
+        _application.renderHtmlAsString(htmlInput, parameters: parameters);
+    html(data);
   }
 
   /// [html] is a method that sends the response as html.
-
   void html(String html) {
     headers.contentType = ContentType.html;
     send(html);
@@ -351,6 +371,7 @@ class Response {
   /// getter for the [headers] of the response.
   /// returns a [HttpHeaders].
   HttpHeaders get headers => _response.headers;
+
   HttpResponse get httpResponse => _response;
 
   /// [write] is a method that writes the [obj] to the response.

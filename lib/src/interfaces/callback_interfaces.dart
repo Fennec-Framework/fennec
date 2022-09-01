@@ -33,7 +33,7 @@ typedef EngineHandlerCallback = Function(dynamic e, String? rendered);
 /// [locals] is a [Map] that is the locals.
 /// [cb] is a [EngineHandlerCallback] that is the callback.
 typedef EngineHandler = Function(
-    String filePath, Map<String, dynamic>? locals, EngineHandlerCallback cb);
+    String filePath, Map<String, dynamic>? locals, EngineHandlerCallback cb, Map<String,dynamic>? parameters);
 
 /// [MiddleWareRequestByLoadUser] is a [typedef] that is used to define a callback.
 /// [req] is a [Request] that is the request.
