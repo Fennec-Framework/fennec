@@ -133,16 +133,16 @@ class Server {
     }
     Request request = await BodyParser.parseBody(httpRequest, {});
     Response response = Response(httpRequest.response, application, method);
-    if (application.cors != null) {
-      var corsCallback = application.cors!;
-      final isOptionsMethod = await corsCallback(request, response);
-      if (isOptionsMethod == null) {
-        return true;
-      }
-    } else if (application.corsOptions != null) {
+    if (application.corsOptions != null) {
       var corsCallback = cors(application.corsOptions!);
       final isOptionsMethod = await corsCallback(request, response);
 
+      if (isOptionsMethod == null) {
+        return true;
+      }
+    }
+    for (MiddlewareHandler middlewareHandler in application.middlewares) {
+      final isOptionsMethod = await middlewareHandler(request, response);
       if (isOptionsMethod == null) {
         return true;
       }

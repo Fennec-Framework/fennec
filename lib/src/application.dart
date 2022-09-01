@@ -9,7 +9,8 @@ class Application {
   final Map<String, Engine> _engines = {};
 
   CorsOptions? corsOptions;
-  CorsCallback? cors;
+
+  final List<MiddlewareHandler> middlewares = [];
 
   /// instance of [Application] that contains the application.
   static final Application _instance = Application._internal();
@@ -103,47 +104,47 @@ class Application {
   }
 
   /// [setCache] is a method that enable caching of the application.
-  /// bydefault it's set to false.
+  /// by default it's set to false.
   Application setCache(bool cache) {
     this.cache = cache;
     return this;
   }
 
   /// [setHost] is a method that sets the host of server of the application.
-  /// bydefault it's set to '0.0.0.0'.
+  /// by default it's set to '0.0.0.0'.
   Application setHost(dynamic host) {
     this.host = host;
     return this;
   }
 
   /// [setPort] is a method that sets the port of server of the application.
-  /// bydefault it's set to 8000.
+  /// by default it's set to 8000.
   Application setPort(int port) {
     this.port = port;
     return this;
   }
 
   /// [setSecurityContext] is a method that sets the SecurityContext of server of the application.
-  /// bydefault it's set to null.
+  /// by default it's set to null.
   Application setSecurityContext(SecurityContext securityContext) {
     this.securityContext = securityContext;
     return this;
   }
 
-  /// [setViewPath] is a method that sets the defaultpath of views of the application.
+  /// [setViewPath] is a method that sets the default path of views of the application.
   Application setViewPath(String viewPath) {
     this.viewPath = viewPath;
     return this;
   }
 
-  /// [setViewEngine] is a method that sets the defaultviewEngine of views of the application.
+  /// [setViewEngine] is a method that sets the default viewEngine of views of the application.
   Application setViewEngine(String viewEngine) {
     this.viewEngine = viewEngine;
     return this;
   }
 
   /// [setNumberOfIsolates] is a method that sets the number of isolates of the application.
-  /// bydefault it's set to 1.
+  /// by default it's set to 1.
   Application setNumberOfIsolates(int numberOfIsolates) {
     this.numberOfIsolates = numberOfIsolates;
     return this;
@@ -159,13 +160,15 @@ class Application {
     return this;
   }
 
+  ///[setCorsOptions] is used to add Cors to the response header
   Application setCorsOptions(CorsOptions corsOptions) {
     this.corsOptions = corsOptions;
     return this;
   }
 
-  Application setCors(CorsCallback cors) {
-    this.cors = cors;
+  /// [use] is used to defines middlewares, that will be executed after every request.
+  Application use(MiddlewareHandler middlewareHandler) {
+    middlewares.add(middlewareHandler);
     return this;
   }
 

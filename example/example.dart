@@ -9,13 +9,12 @@ void main(List<String> arguments) async {
   application.setPort(3114).setHost(InternetAddress.loopbackIPv4);
   application
       .setCorsOptions(CorsOptions(methods: "PUT,GET,DELETE", origin: '*'));
-  application.setCors((req, res) {
+  application.use((req, res) {
     CorsOptions x = CorsOptions(methods: "PUT,GET,DELETE", origin: '*');
-    res.headers.add('a', x.headers);
-    res.headers.add('Access-Control-Allow-Origin', x.origin);
-    res.headers.add('Access-Control-Allow-Methods', x.methods);
-    res.headers.add('Access-Control-Allow-Headers', x.headers);
-    res.headers.add('Access-Control-Expose-Headers', x.headers);
+    res.headers.set('Access-Control-Allow-Origin', x.origin);
+    res.headers.set('Access-Control-Allow-Methods', x.methods);
+    res.headers.set('Access-Control-Allow-Headers', x.headers);
+    res.headers.set('Access-Control-Expose-Headers', x.headers);
     if (req.httpRequest.method == 'OPTIONS') {
       res.close();
       return null;
@@ -55,7 +54,7 @@ void main(List<String> arguments) async {
       requestHandler: (Request req, Response res) {
         res.render('not_found.html', parameters: {
           "sasd": 123,
-          'tester': ["aa11", "sdwsd",11]
+          'tester': ["aa11", "sdwsd", 11]
         });
       },
       middlewares: [
