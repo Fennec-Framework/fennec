@@ -5,7 +5,7 @@ enum MiddleWareResponseEnum { next, stop }
 
 @Deprecated('not used more. you can use Next instead')
 
-/// [MiddleWareResponse] is a class that contains the response of the middleware.
+/// [MiddleWareResponse] is a class that contains the response of the middleware
 class MiddleWareResponse {
   /// [value] is a [MiddleWareResponseEnum] that contains the response of the middleware.
   final MiddleWareResponseEnum value;
@@ -14,6 +14,16 @@ class MiddleWareResponse {
   MiddleWareResponse(this.value);
 }
 
-class Next {
+/// [AMiddleWareResponse] is an abstract class that contains the response of the middleware
+abstract class AMiddleWareResponse {
+}
+
+class Next implements AMiddleWareResponse {
   Next();
+}
+
+class Stop implements AMiddleWareResponse {
+  final Response response;
+
+  Stop(this.response);
 }

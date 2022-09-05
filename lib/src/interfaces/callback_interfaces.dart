@@ -5,13 +5,13 @@ part of fennec;
 /// [res] is a [Response] that is the response.
 ///
 /// returns [FutureOr] of [void].
-typedef RequestHandler = FutureOr Function(Request req, Response res);
+typedef RequestHandler = FutureOr<Response> Function(Request req, Response res);
 
 /// [MiddlewareHandler] is a [typedef].
 /// [req] is a [Request] that is the request.
 /// [res] is a [Response] that is the response.
 /// returns [FutureOr] of [Next].
-typedef MiddlewareHandler = FutureOr<Next?> Function(Request req, Response res);
+typedef MiddlewareHandler = FutureOr<AMiddleWareResponse> Function(Request req, Response res);
 
 /// [RouteNotFoundException] is a [typedef].
 /// [response] is a [Response] that is the response.

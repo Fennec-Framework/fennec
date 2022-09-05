@@ -20,49 +20,47 @@
 
 # make your first request:
 
-create your First Controller:
+call your Router
 
 ```dart
-class TestController {
-  void test(Request request, Response response) {
-    response.ok().send('hellow world');
-  }
+
+
+Router testRouter = Router(routerPath: '/Test');
+testRouter.useMiddleware((
+req, res) {
+if (1 == 2) {
+return Stop(res.forbidden());
 }
-```
 
-call your Router and Controller
+return Next();
+});
+testRouter.get(path: '
+/
+simple1',
+requestHandler: (
 
-```dart
-  Router testRouter = Router(routerPath: '/Test');
-  testRouter.get(
-      path: '/simple', requestHandler: TestController().test, middlewares: []);
-  testRouter.get(
-      path: '/simple1',
-      requestHandler: (Request req, Response res) {
-        res.send(req.body);
-      },
-      middlewares: []);
-  applicationCofiguration.addRouter(testRouter);
-  applicationCofiguration.addRoute(Route(
-      path: '/show',
-      requestMethod: RequestMethod.get(),
-      requestHandler: (Request req, Response res) {
-        res.ok().send('show received');
-      },
-      middlewares: []));
+Request req, Response
+res) {
+return res.ok('ok');
+}
+);
 
 
 ```
 
 ## Middleware
 
-it must be a typedef **MiddlewareHandler** and must return always **MiddleWareResponse**. here an example how to implement it:
+it must be a typedef **MiddlewareHandler** and must return always **AMiddleWareResponse**. here an example how to
+implement it:
 
 ```dart
- Future<MiddleWareResponse> testMiddleware(Request req, Response res) async {
-    res.html("You are not allowed to do that");
-    return MiddleWareResponse(MiddleWareResponseEnum.stop);
+ Future<AMiddleWareResponse> testMiddleware(Request req, Response res) async {
+  if (1 == 2) {
+    return Next();
   }
+  return Stop(res.forbidden(
+      body: {"error": "not allowed"}, contentType: ContentType.json));
+}
 
 
 ```
@@ -71,16 +69,29 @@ it must be a typedef **MiddlewareHandler** and must return always **MiddleWareRe
 
 ```dart
 
-you can use also define a router middleware by.
-testRouter.useMiddleware((req, res) {
-    if (1 == 23) {
-      return MiddleWareResponse(MiddleWareResponseEnum.next);
-    }
-    res.forbidden().send('sddd');
-    return MiddleWareResponse(MiddleWareResponseEnum.stop);
-  });
+you can
 
-  testRouter.get(path: '/simple', requestHandler: TestController().test);
+use also
+
+define a
+
+router middleware
+by.
+testRouter.useMiddleware((
+req, res) {
+if (1 == 23) {
+return MiddleWareResponse(MiddleWareResponseEnum.next);
+}
+res.forbidden().send('sddd');
+return MiddleWareResponse(MiddleWareResponseEnum.stop);
+});
+
+testRouter.get(path: '
+/
+simple',
+requestHandler: TestController
+(
+).test);
 
 
 ```
@@ -91,12 +102,15 @@ here is an example hot to use dynamic routes
 
 ```dart
 
-  application.get(
-      path: '/dynamic_routes/@userId',
-      requestHandler: (req, res) {
-        res.json({'userId': req.pathParams['userId']});
-      },
-      middlewares: []);
+application.get(path: '
+/dynamic_routes/@userId
+'
+,
+requestHandler: (
+req, res) {
+res.ok(body:{'userId': req.pathParams['userId']},contentType = ContentType.json);
+}
+);
 
 ```
 
@@ -108,9 +122,9 @@ an example how to handle files
 
 
 Future fileSystems(Request request, Response response) async {
-    response.json({
-      'file1': request.files.first.toString(),
-    });
+  response.json({
+    'file1': request.files.first.toString(),
+  });
 }
 
 ```
@@ -125,13 +139,14 @@ how to use it :
 
 WebSocketHandler webSocketHandler = WebSocketHandler();
 webSocketHandler.registerWebSocketHandler(server);
-webSocketHandler.clientsListener.stream.listen((event) {
-    if (event.headers!.value('token') != null) {
-      webSocketHandler.addClient(event);
-    } else {
-      event.webSocket.addError('not allowed');
-    }
-  });
+webSocketHandler.clientsListener.stream.listen((
+event) {
+if (event.headers!.value('token') != null) {
+webSocketHandler.addClient(event);
+} else {
+event.webSocket.addError('not allowed');
+}
+});
 //Send data to all registred Clients
 webSocketHandler.sendToAllJson({'key': 'value'});
 
@@ -139,13 +154,15 @@ webSocketHandler.sendToAllJson({'key': 'value'});
 
 ## Multithreading
 
-Fennec Framework supports also Multithreading over isolates. To increate the number of used isolates just call the function setNumberOfIsolates. the default number of isolates is 1
+Fennec Framework supports also Multithreading over isolates. To increate the number of used isolates just call the
+function setNumberOfIsolates. the default number of isolates is 1
 
 **example**
 
 ```dart
 
-application.setNumberOfIsolates(1);
+application.setNumberOfIsolates(1
+);
 
 ```
 
@@ -177,7 +194,7 @@ void main(List<String> arguments) async {
         res.ok().send('show received');
       },
       middlewares: [
-        (req, res) {
+            (req, res) {
           if (1 == 2) {
             return MiddleWareResponse(MiddleWareResponseEnum.next);
           }
@@ -193,18 +210,20 @@ void main(List<String> arguments) async {
 
 # deploy
 
-- **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack) is heroku-buildpack for dart and inside it an example how to deploy Fennec Framework on heroku cloud for free.
+- **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack) is heroku-buildpack for dart and inside
+  it an example how to deploy Fennec Framework on heroku cloud for free.
   to test an example you can try this two endpoints:
 
-  - https://fennec-deploy.herokuapp.com/healthcheck/servercheck
+    - https://fennec-deploy.herokuapp.com/healthcheck/servercheck
 
-  - https://fennec-deploy.herokuapp.com/healthcheck
+    - https://fennec-deploy.herokuapp.com/healthcheck
 
 - for next days, another example for aws and goolge run will be uploaded.
 
 # Benchmarks using [wrk](https://github.com/wg/wrk)
 
-after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports), we could gets this data:
+after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two Thunderbolt 3
+ports), we could gets this data:
 
 - t: number of threads
 - c: number of open connections
@@ -212,9 +231,9 @@ after running this endpoint using Fennec Framework on local machine (MacBook Pro
 
 ```dart
  @Route('/test', RequestMethod.get())
-  Future test(Request request, Response response) async {
-    response.send('hello world');
-  }
+Future test(Request request, Response response) async {
+  response.send('hello world');
+}
 
 ```
 
@@ -242,7 +261,8 @@ after running this endpoint using Fennec Framework on local machine (MacBook Pro
 
 ## import information
 
-Fennec Framework after with version >= 1.0.0 doesn't support more annotations because the big discussions about the library mirrors. as alernatives you can use Route or Route as showed in this example.
+Fennec Framework after with version >= 1.0.0 doesn't support more annotations because the big discussions about the
+library mirrors. as alernatives you can use Route or Route as showed in this example.
 
 # License
 

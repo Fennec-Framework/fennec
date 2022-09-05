@@ -1,6 +1,6 @@
 part of fennec;
 
-FutureOr<Next?> Function(Request request, Response response) cors(
+FutureOr<AMiddleWareResponse> Function(Request request, Response response) cors(
     CorsOptions corsOptions) {
   return (Request req, Response res) {
     res.headers.add('Access-Control-Allow-Origin', corsOptions.origin);
@@ -11,7 +11,7 @@ FutureOr<Next?> Function(Request request, Response response) cors(
 
     if (isPreflight(req)) {
       res.statusCode = 204;
-      res.close();
+      return Stop(res);
     }
     return Next();
   };

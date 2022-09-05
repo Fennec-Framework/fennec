@@ -23,11 +23,12 @@ class Application {
   Application._internal();
 
   /// [render] is a method that renders a view.
-  void render(String fileName, Map<String, dynamic>? locals,
-      Function(dynamic, String?) callback,
+  void render( String fileName,
+      Map<String, dynamic>? locals, Function(dynamic, String?) callback,
       {Map<String, dynamic> parameters = const {}}) {
     final view = _getViewFromFileName(fileName);
     view.render(locals, parameters, callback);
+
   }
 
   /// [renderHtmlAsString] is a method that renders a html file by a String.

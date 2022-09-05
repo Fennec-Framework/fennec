@@ -12,6 +12,7 @@ class Server {
   /// [_listeningToServer] is a [bool] that indicates if the server is listening.
   /// bydefault it's false.
   bool _listeningToServer = false;
+  bool _isDone = false;
 
   /// [_instance] is a [Server] that contains the instance of the server.
   static final Server _instance = Server._internal();
@@ -123,6 +124,7 @@ class Server {
 
   Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
     _unawaited(httpRequest.response.done.then((dynamic _) {
+      _isDone = true;
       return true;
     }));
     final String path = httpRequest.uri.path;
@@ -137,13 +139,24 @@ class Server {
       var corsCallback = cors(application.corsOptions!);
       final isOptionsMethod = await corsCallback(request, response);
 
-      if (isOptionsMethod == null) {
+      if (isOptionsMethod is Stop) {
+        Response sentResponse = isOptionsMethod.response;
+        if (!sentResponse.isClosed) {
+          sentResponse.write();
+        }
         return true;
       }
     }
     for (MiddlewareHandler middlewareHandler in application.middlewares) {
       final isOptionsMethod = await middlewareHandler(request, response);
-      if (isOptionsMethod == null) {
+
+      if (isOptionsMethod is Stop) {
+        Response sentResponse = isOptionsMethod.response;
+
+        if (!sentResponse.isClosed) {
+          sentResponse.write();
+        }
+
         return true;
       }
     }
@@ -157,13 +170,25 @@ class Server {
           request.pathParams = pathParams;
           List<MiddlewareHandler> middlewares = route.middlewares;
           for (MiddlewareHandler middlewareHandler in middlewares) {
-            final Next? middleWareResponse =
+            final AMiddleWareResponse middleWareResponse =
                 await middlewareHandler(request, response);
-            if (middleWareResponse == null) {
+
+            if (middleWareResponse is Stop) {
+              Response sentResponse = middleWareResponse.response;
+              if (!sentResponse.isClosed) {
+                sentResponse.write();
+              }
+
               return true;
             }
           }
-          await route.requestHandler(request, response);
+
+          Response sentResponse = await route.requestHandler(request, response);
+          if (!sentResponse.isClosed) {
+            print('server response');
+            sentResponse.write();
+          }
+
           return true;
         }
       }

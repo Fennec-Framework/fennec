@@ -16,8 +16,7 @@ void main(List<String> arguments) async {
     res.headers.set('Access-Control-Allow-Headers', x.headers);
     res.headers.set('Access-Control-Expose-Headers', x.headers);
     if (req.httpRequest.method == 'OPTIONS') {
-      res.close();
-      return null;
+      return Stop(res);
     }
     return Next();
   });
@@ -25,25 +24,25 @@ void main(List<String> arguments) async {
   application.get(
     path: '/dynamic_routes/@userId',
     requestHandler: (req, res) {
-      res.render('s');
-      res.json({'userId': req.pathParams['userId']});
+      return res.ok(body: {'A': 12}, contentType: ContentType.json);
     },
   );
 
   Router testRouter = Router(routerPath: '/Test');
   testRouter.useMiddleware((req, res) {
-    if (1 == 1) {
-      return null;
+    if (1 == 2) {
+      return Stop(res.forbidden());
     }
-    res.forbidden().send('sddd');
+
     return Next();
   });
 
   testRouter.get(path: '/simple', requestHandler: TestController().test);
+
   testRouter.get(
       path: '/simple1',
       requestHandler: (Request req, Response res) {
-        res.redirect(Uri.parse('http://localhost:8000/Test/simple?akram=12'));
+        return res.redirect('/Test/simple');
       },
       middlewares: []);
   application.addRouter(testRouter);
@@ -52,18 +51,19 @@ void main(List<String> arguments) async {
       path: '/show',
       requestMethod: RequestMethod.get(),
       requestHandler: (Request req, Response res) {
-        res.render('not_found.html', parameters: {
-          "sasd": 123,
-          'tester': ["aa11", "sdwsd", 11]
-        });
+        if (1 == 2) {
+          return res.redirect('/Test/simple1');
+        } else {
+          return res.ok(body: {'a': 1}, contentType: ContentType.json);
+        }
       },
       middlewares: [
         (req, res) {
-          if (2 == 2) {
+          if (1 == 2) {
             return Next();
           }
-          res.forbidden().json({'ss': 'not allowed'});
-          return null;
+          return Stop(res.forbidden(
+              body: {"error": "not allowed"}, contentType: ContentType.json));
         }
       ]));
 
@@ -85,12 +85,11 @@ void main(List<String> arguments) async {
 }
 
 class TestController {
-  void test(Request request, Response response) {
-    response.ok().json(request.params);
+  Response test(Request request, Response response) {
+    return response.render('test.html', parameters: {'Title': 'redirect'});
   }
 
-  Future<Next?> testMiddleware(Request req, Response res) async {
-    res.html("You are not allowed to do that");
+  Future<AMiddleWareResponse> testMiddleware(Request req, Response res) async {
     return Next();
   }
 }

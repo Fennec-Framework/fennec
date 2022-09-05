@@ -1,6 +1,11 @@
+## 2.0.2
+
+- change Middleware to return and RequestHandler
+
 ## 2.0.1
 
 - change method name
+
 ## 2.0.0
 
 - add Middlewares for every request
