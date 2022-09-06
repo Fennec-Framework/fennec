@@ -17,13 +17,26 @@ class Response {
   /// constructor that creates a new [Response] object.
   Response(this._response, this._application, this.method);
 
-  /* /// [send] is a method that sends the response.
-  /// It's used to send the response.
-  void send(dynamic body) {
-    headers.contentType ??= ContentType.text;
+  Response html() {
+    headers.contentType = ContentType.html;
+    return this;
+  }
 
-    close();
-  }*/
+  Response json() {
+    headers.contentType = ContentType.json;
+    return this;
+  }
+
+  Response text() {
+    headers.contentType = ContentType.text;
+
+    return this;
+  }
+
+  Response binary() {
+    headers.contentType = ContentType.binary;
+    return this;
+  }
 
   Response redirect(String path, {int status = HttpStatus.movedTemporarily}) {
     isClosed = true;

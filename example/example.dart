@@ -54,7 +54,7 @@ void main(List<String> arguments) async {
         if (1 == 2) {
           return res.redirect('/Test/simple1');
         } else {
-          return res.ok(body: {'a': 1}, contentType: ContentType.json);
+          return res.ok(body: {'a': 1}).text();
         }
       },
       middlewares: [
@@ -62,8 +62,7 @@ void main(List<String> arguments) async {
           if (1 == 2) {
             return Next();
           }
-          return Stop(res.forbidden(
-              body: {"error": "not allowed"}, contentType: ContentType.json));
+          return Stop(res.forbidden(body: {"error": "not allowed"}).json());
         }
       ]));
 
