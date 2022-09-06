@@ -1,3 +1,7 @@
+## 2.0.3
+
+- implement contentType for Response a Function
+
 ## 2.0.2
 
 - change Middleware to return and RequestHandler
