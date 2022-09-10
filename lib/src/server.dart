@@ -12,7 +12,6 @@ class Server {
   /// [_listeningToServer] is a [bool] that indicates if the server is listening.
   /// bydefault it's false.
   bool _listeningToServer = false;
-  bool _isDone = false;
 
   /// [_instance] is a [Server] that contains the instance of the server.
   static final Server _instance = Server._internal();
@@ -124,7 +123,6 @@ class Server {
 
   Future<bool> handleHttpRequest(HttpRequest httpRequest) async {
     _unawaited(httpRequest.response.done.then((dynamic _) {
-      _isDone = true;
       return true;
     }));
     final String path = httpRequest.uri.path;
@@ -185,7 +183,6 @@ class Server {
 
           Response sentResponse = await route.requestHandler(request, response);
           if (!sentResponse.isClosed) {
-            print('server response');
             sentResponse.write();
           }
 

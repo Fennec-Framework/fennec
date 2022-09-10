@@ -15,8 +15,7 @@ class MiddleWareResponse {
 }
 
 /// [AMiddleWareResponse] is an abstract class that contains the response of the middleware
-abstract class AMiddleWareResponse {
-}
+abstract class AMiddleWareResponse {}
 
 class Next implements AMiddleWareResponse {
   Next();
