@@ -1,3 +1,7 @@
+## 2.0.4
+
+- fix formatting of files
+
 ## 2.0.3
 
 - implement contentType for Response a Function
