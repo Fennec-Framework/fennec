@@ -3,7 +3,7 @@ part of fennec;
 ///[TemplateRender]  is a class that will be used to rendering templates with html extensions and contains caching if it's enabled.
 class TemplateRender {
   static final TemplateRender _instance = TemplateRender._internal();
-  late bool cache;
+  late bool cache = false;
   final Map<String, dynamic> cached = {};
   final Map<String, Engine> _engines = {};
   final String defaultEngine = "html";
@@ -32,12 +32,12 @@ class TemplateRender {
 
   View _getViewFromFileName(String fileName) {
     View? view;
-    if (_instance.cache) {
-      view = _instance.cached[fileName];
+    if (cache) {
+      view = cached[fileName];
     }
     if (view == null) {
-      view = View(fileName, _instance._engines,
-          defaultEngine: _instance.defaultEngine, rootPath: _instance.rootPath);
+      view = View(fileName, _engines,
+          defaultEngine: defaultEngine, rootPath: rootPath);
 
       if (view.filePath == null) {
         late String dirs;
@@ -50,8 +50,8 @@ class TemplateRender {
         throw ViewException(view, dirs);
       }
     }
-    if (_instance.cache) {
-      _instance.cached[fileName] = view;
+    if (cache) {
+      cached[fileName] = view;
     }
     return view;
   }

@@ -1,6 +1,6 @@
 name: fennec
-description: Fennec is a dart web framework with the principal goal make web server side more easy and fast to develop.
-version: 2.0.5
+description:  Fennec is a multi-threaded, robust Dart Server-Side Framework.
+version: 2.0.6
 homepage: https://github.com/Fennec-Framework/fennec
 issue_tracker: https://github.com/Fennec-Framework/fennec/issues
 

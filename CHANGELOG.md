@@ -1,3 +1,7 @@
+
+## 2.0.6
+
+- Implementing the concept of sharing Data between isolates, improve handling og websockets, improve docs.
 ## 2.0.4
 
 - fix formatting of files

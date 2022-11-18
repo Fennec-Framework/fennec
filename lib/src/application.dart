@@ -292,6 +292,7 @@ class Application {
     await Future.wait(List.generate(
         _supervisors.length, (index) => _supervisors[index].initState()));
     final TemplateRender templateRender = TemplateRender(_instance.cache);
+    templateRender.rootPath = _instance.viewPath;
     final ServerInput serverInput = ServerInput(
         _instance.port,
         _instance.host,

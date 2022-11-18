@@ -141,7 +141,8 @@ class Server {
       }
     }
     for (MiddlewareHandler middlewareHandler in serverInput.middlewares) {
-      final isOptionsMethod = await middlewareHandler(request, response);
+      final isOptionsMethod =
+          await middlewareHandler(serverContext, request, response);
 
       if (isOptionsMethod is Stop) {
         Response sentResponse = isOptionsMethod.response;
@@ -164,8 +165,8 @@ class Server {
           request.pathParams = pathParams;
           List<MiddlewareHandler> middlewares = route.middlewares;
           for (MiddlewareHandler middlewareHandler in middlewares) {
-            final MiddleWare middleWareResponse =
-                await middlewareHandler(request, response);
+            final Middleware middleWareResponse =
+                await middlewareHandler(serverContext, request, response);
 
             if (middleWareResponse is Stop) {
               Response sentResponse = middleWareResponse.response;
@@ -178,7 +179,6 @@ class Server {
           }
           if (route is WebsocketRoute &&
               route.path == path &&
-              path.endsWith("/ws") &&
               route.requestMethod.requestMethod ==
                   RequestMethod.get().requestMethod) {
             if (httpRequest.headers.value("Upgrade") != null &&

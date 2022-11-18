@@ -2,7 +2,7 @@
 <img src="https://user-images.githubusercontent.com/55693316/173706793-0666f8a8-67d6-4d1b-8b79-78fa4808e72e.png" height="500" />
 </p>
 
-# Fennec is a dart web framework with the principal goal: make web server side more easy and fast to develop.
+# Fennec is a multi-threaded, robust Dart Server-Side Framework.
 
 # Packages
 
@@ -18,99 +18,86 @@
 1. create a simple dart project. you can use terminal for that **dart create 'projectname'**
 2. install the framework from [pub.dev](https://pub.dev/packages/fennec)
 
+# supported features by fennec:
+
+1. Multi-threaded http request.
+2. WebSocket request.
+3. Handling requests with a simple and solid Router logic.
+4. Handling dynamic path routes.
+5. Middlewares at level of every request and Router level.
+6. Templates rendering system with html extension.
+7. Handling Form Data.
+
 # make your first request:
 
-call your Router
+you can make a request by creating a [Route] and add it to [Application] instance or create
+a [Router] and add it to [application] instance.
+
+# create a Router.
 
 ```dart
+Router testRouter() {
+  Router router = Router();
 
+  router.get(
+      path: "/test",
+      requestHandler: (context, req, res) async {
+        return res.ok(body: "hello world");
+      });
 
-Router testRouter = Router(routerPath: '/Test');
-testRouter.useMiddleware((
-req, res) {
-if (1 == 2) {
-return Stop(res.forbidden());
+  return router;
 }
-
-return Next();
-});
-testRouter.get(path: '
-/
-simple1',
-requestHandler: (
-
-Request req, Response
-res) {
-return res.ok('ok');
-}
-);
 
 
 ```
 
 ## Middleware
 
-it must be a typedef **MiddlewareHandler** and must return always **AMiddleWareResponse**. here an example how to
-implement it:
+it must be a typedef **MiddlewareHandler** and must return always **MiddleWare**. here an example
+how to implement it:
 
 ```dart
- Future<AMiddleWareResponse> testMiddleware(Request req, Response res) async {
+  Future<Middleware> testMiddleware(ServerContext serverContext, Request req, Response res) async {
   if (1 == 2) {
     return Next();
   }
-  return Stop(res.forbidden(
-      body: {"error": "not allowed"}, contentType: ContentType.json));
+  return Stop(res.forbidden(body: {"error": "not allowed"}).json());
 }
 
 
 ```
 
-## Router Middleware
+## Add Middleware to a Router
+
+you can use also define a Router Middleware by.
 
 ```dart
 
-you can
-
-use also
-
-define a
-
-router middleware
-by.
-testRouter.useMiddleware((
-req, res) {
-if (1 == 23) {
-return MiddleWareResponse(MiddleWareResponseEnum.next);
+router.useMiddleware((
+serverContext, req, res) {
+if (1 == 2) {
+return Next();
 }
-res.forbidden().send('sddd');
-return MiddleWareResponse(MiddleWareResponseEnum.stop);
+return Stop(res.forbidden(body: {"error": "not allowed"}).json());
 });
-
-testRouter.get(path: '
-/
-simple',
-requestHandler: TestController
-(
-).test);
 
 
 ```
 
 ## dynamic routes
 
-here is an example hot to use dynamic routes
+here is an example how to use dynamic path routes
 
 ```dart
-
-application.get(path: '
-/dynamic_routes/@userId
-'
+router.get(path: "
+/
+test/{id}
+"
 ,
 requestHandler: (
-req, res) {
-res.ok(body:{'userId': req.pathParams['userId']},contentType = ContentType.json);
-}
-);
+context, req, res) {
+return res.ok(body: {"id": req.pathParams['id']}).json();
+});
 
 ```
 
@@ -119,43 +106,55 @@ res.ok(body:{'userId': req.pathParams['userId']},contentType = ContentType.json)
 an example how to handle files
 
 ```dart
+router.get(path: "
+/
+getFile",
+requestHandler: (
+context, req, res) {
+return res.ok(body: req.files.first.filename);
+});
 
+```
 
-Future fileSystems(Request request, Response response) async {
-  response.json({
-    'file1': request.files.first.toString(),
-  });
-}
+## Template with html extension
+
+you can render also html templates with fennec Framework. you need to determine the path for your
+html files.
+application.setViewPath(path.current + '/example');
+
+an example how to use it.
+
+```dart
+
+router.get(path: "
+/template",requestHandler: (
+context, req, res) {
+return res.render("file");
+});
 
 ```
 
 ## WebSocket
 
-WebSocket is already integrated in the core of Framework.
+WebSocket is already integrated in the core of Framework. firstly to use Websocket . you need to
+make the useWebSocket object at [Application] instance true.
 
 how to use it :
 
 ```dart
-
-WebSocketHandler webSocketHandler = WebSocketHandler();
-webSocketHandler.registerWebSocketHandler(server);
-webSocketHandler.clientsListener.stream.listen((
-event) {
-if (event.headers!.value('token') != null) {
-webSocketHandler.addClient(event);
-} else {
-event.webSocket.addError('not allowed');
-}
+  router.ws(path: "/connect",
+websocketHandler: (
+context, websocket) {
+/// handle new connected websocket client.
 });
-//Send data to all registred Clients
-webSocketHandler.sendToAllJson({'key': 'value'});
+
 
 ```
 
 ## Multithreading
 
-Fennec Framework supports also Multithreading over isolates. To increate the number of used isolates just call the
-function setNumberOfIsolates. the default number of isolates is 1
+Fennec Framework supports also Multithreading over isolates. To increase the number of used isolates
+just call the function setNumberOfIsolates. the default number of isolates is 1
 
 **example**
 
@@ -170,49 +169,26 @@ application.setNumberOfIsolates(1
 
 ```dart
 import 'package:fennec/fennec.dart';
-import 'package:path/path.dart' as path;
 
-import 'test.dart';
 
 void main(List<String> arguments) async {
   Application application = Application();
-  application.setPort(8000).setHost(InternetAddress.loopbackIPv4);
-  TestRouter testRouter = TestRouter();
-  testRouter.get(
-      path: '/simple', requestHandler: TestController().test, middlewares: []);
-  testRouter.get(
-      path: '/simple1',
-      requestHandler: (Request req, Response res) {
-        res.send(req.body);
-      },
-      middlewares: []);
-  application.addRouter(testRouter);
-  application.addRoute(Route(
-      path: '/show',
-      requestMethod: RequestMethod.get(),
-      requestHandler: (Request req, Response res) {
-        res.ok().send('show received');
-      },
-      middlewares: [
-            (req, res) {
-          if (1 == 2) {
-            return MiddleWareResponse(MiddleWareResponseEnum.next);
-          }
-          res.forbidden().send('not allowed');
-          return MiddleWareResponse(MiddleWareResponseEnum.stop);
-        }
-      ]));
 
-  Server server = Server(application);
-  await server.startServer();
-}
+  application.setNumberOfIsolates(1);
+  application.useWebSocket(true);
+  application.setPort(8000);
+  application.addRouters([testRouter()]);
+
+  ServerInfo serverInfo = await application.runServer();
+  print("Server is running at Port ${serverInfo.port}");
+}}
 ```
 
 # deploy
 
-- **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack) is heroku-buildpack for dart and inside
-  it an example how to deploy Fennec Framework on heroku cloud for free.
-  to test an example you can try this two endpoints:
+- **heroku cloud:** [here](https://github.com/Fennec-Framework/heroku-buildpack) is heroku-buildpack
+  for dart and inside it an example how to deploy Fennec Framework on heroku cloud for free. to test
+  an example you can try this two endpoints:
 
     - https://fennec-deploy.herokuapp.com/healthcheck/servercheck
 
@@ -222,18 +198,21 @@ void main(List<String> arguments) async {
 
 # Benchmarks using [wrk](https://github.com/wg/wrk)
 
-after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two Thunderbolt 3
-ports), we could gets this data:
+after running this endpoint using Fennec Framework on local machine (MacBook Pro (13-inch, 2019, Two
+Thunderbolt 3 ports), we could gets this data:
 
 - t: number of threads
 - c: number of open connections
 - d: duration of test
 
 ```dart
- @Route('/test', RequestMethod.get())
-Future test(Request request, Response response) async {
-  response.send('hello world');
-}
+  router.get(path: "
+/
+test",
+requestHandler: (
+context, req, res) async {
+return res.ok(body: "hello world");
+});
 
 ```
 
@@ -261,8 +240,9 @@ Future test(Request request, Response response) async {
 
 ## import information
 
-Fennec Framework after with version >= 1.0.0 doesn't support more annotations because the big discussions about the
-library mirrors. as alernatives you can use Route or Route as showed in this example.
+Fennec Framework after with version >= 1.0.0 doesn't support more annotations because the big
+discussions about the library mirrors. as alernatives you can use Route or Route as showed in this
+example.
 
 # License
 

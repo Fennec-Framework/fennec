@@ -14,14 +14,14 @@ class MiddleWareResponse {
   MiddleWareResponse(this.value);
 }
 
-/// [MiddleWare] is an abstract class that contains the response of the middleware
-abstract class MiddleWare {}
+/// [Middleware] is an abstract class that contains the response of the middleware
+abstract class Middleware {}
 
-class Next implements MiddleWare {
+class Next implements Middleware {
   Next();
 }
 
-class Stop implements MiddleWare {
+class Stop implements Middleware {
   final Response response;
   Stop(this.response);
 }

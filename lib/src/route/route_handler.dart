@@ -14,8 +14,8 @@ class RoutesHandler {
         String path = pathComponents[i];
         String route = routeComponents[i];
         if (path == route) continue;
-        if (route.startsWith("@")) {
-          params[route.substring(1)] = path;
+        if (route.startsWith("{") && route.endsWith("}")) {
+          params[route.substring(1, route.length - 1)] = path;
         }
       }
     }
@@ -55,7 +55,8 @@ class RoutesHandler {
           String path = pathComponents[i];
           String route = routeComponents[i];
 
-          if (path != route && !route.startsWith("@")) {
+          if (path != route &&
+              !(route.startsWith("{") && route.endsWith("}"))) {
             checker = true;
           }
         }
