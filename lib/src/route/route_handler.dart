@@ -25,15 +25,15 @@ class RoutesHandler {
   /// [checkRoutes] is a static method that is used to check if a route is
   /// valid.
   /// [routes] is a [List] of [Route].
-  static void checkRoutes(List<Route> routes) {
-    List<String> exitingsRoutes = [];
-    for (Route route in routes) {
+  static void checkRoutes(List<ARoute> routes) {
+    List<String> existingRoutes = [];
+    for (ARoute route in routes) {
       String composed =
           (route.path + route.requestMethod.requestMethod).toLowerCase();
-      if (exitingsRoutes.contains(composed)) {
+      if (existingRoutes.contains(composed)) {
         throw Exception('you have multiples Routes with the same end point');
       } else {
-        exitingsRoutes.add(composed);
+        existingRoutes.add(composed);
       }
     }
   }
@@ -44,10 +44,10 @@ class RoutesHandler {
   /// [path] is a [String] that is the path to match.
   ///
   /// returns [List] of [RestControllerRoutesMapping].
-  static List<Route> getMatchedRoutes(List<Route> routes, String path) {
-    List<Route> matchedRoutes = [];
+  static List<ARoute> getMatchedRoutes(List<ARoute> routes, String path) {
+    List<ARoute> matchedRoutes = [];
     List<String> pathComponents = path.split("/");
-    for (Route route in routes) {
+    for (ARoute route in routes) {
       List<String> routeComponents = route.path.split("/");
       bool checker = false;
       if (pathComponents.length == routeComponents.length) {
@@ -68,7 +68,7 @@ class RoutesHandler {
     }
     return matchedRoutes;
   }
-  /*
+/*
 
   /// [checkRoutes] is a static method that is used to check if a route is
   /// valid.

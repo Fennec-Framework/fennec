@@ -2,24 +2,31 @@ part of fennec;
 
 /// [Server] is a class that contains information about the server.
 class Server {
-  /// [application] is a [Application] that contains the application.
-  late Application application;
+  /// [serverInput] is a [Application] that contains the application.
+  late ServerInput serverInput;
+  late TemplateRender templateRender;
+  late ServerContext serverContext;
 
   /// [_httpServer] is a [HttpServer] that contains the http server.
-  /// bydefault it's null.
+  /// by default it's null.
   late HttpServer? _httpServer;
 
   /// [_listeningToServer] is a [bool] that indicates if the server is listening.
-  /// bydefault it's false.
+  /// by default it's false.
   bool _listeningToServer = false;
 
   /// [_instance] is a [Server] that contains the instance of the server.
   static final Server _instance = Server._internal();
 
+  final StreamController streamController = StreamController();
+
   /// [Server] is a constructor that creates a new [Server] object.
   /// It's used to create a new [Server] object.
-  factory Server(Application application) {
-    _instance.application = application;
+  factory Server(ServerInput serverInput, TemplateRender templateRender,
+      ServerContext serverContext) {
+    _instance.serverContext = serverContext;
+    _instance.serverInput = serverInput;
+    _instance.templateRender = templateRender;
     return _instance;
   }
 
@@ -27,7 +34,7 @@ class Server {
   Server._internal();
 
   /// [requestTimeOut] is a [Duration] that contains the request timeout of the server.
-  /// bydefault it's null.
+  /// byd default it's null.
   Duration? requestTimeOut;
 
   /// [setRequestTimeOut] is a method that sets the request timeout of the server.
@@ -50,33 +57,24 @@ class Server {
       ? throw Exception("you should start first")
       : _instance._httpServer!;
 
-  /// [startServer] is a method that starts the server.
-  /// It's used to start the server.
-
-  Future<ServerInfo> startServer() async {
-    _registerRoutes();
-    RoutesHandler.checkRoutes(registredRoutes);
-
-    if (_instance.application.numberOfIsolates == 1) {
-      return isolateServer(false);
-    }
-    for (int i = 1; i < _instance.application.numberOfIsolates; i++) {
-      Isolate.spawn(isolateServer, true);
-    }
-    return isolateServer(true);
+  Future<ServerInfo> startServer(int instance, bool shared) async {
+    await _registerRoutes();
+    RoutesHandler.checkRoutes(registeredRoutes);
+    return isolateServer(instance, shared);
   }
 
   /// [isolateServer] is a method binds with the server.
-  Future<ServerInfo> isolateServer(bool shared) async {
-    if (application.securityContext != null) {
+  Future<ServerInfo> isolateServer(int instance, bool shared) async {
+    if (serverInput.securityContext != null) {
       _instance._httpServer = await HttpServer.bindSecure(
-          application.host, application.port, application.securityContext!,
+          serverInput.host, serverInput.port, serverInput.securityContext!,
           shared: shared);
     } else {
       _instance._httpServer = await HttpServer.bind(
-          application.host, application.port,
+          serverInput.host, serverInput.port,
           shared: shared);
     }
+
     final ServerInfo serverInfo = ServerInfo(
         _instance._httpServer!.address,
         _instance._httpServer!.port,
@@ -86,7 +84,7 @@ class Server {
         _instance._httpServer!.serverHeader);
     if (_instance._listeningToServer) return serverInfo;
     _instance._httpServer!.listen(((event) async {
-      await _parseRequest(event).timeout(
+      await _handleRequest(event).timeout(
           _instance.requestTimeOut != null
               ? _instance.requestTimeOut!
               : Duration(seconds: 120), onTimeout: () {
@@ -95,25 +93,22 @@ class Server {
       });
     }));
     _instance._listeningToServer = true;
-    print('Server is running on port:  ${application.port}');
+
+    print(
+        'Server is running on host: ${serverInput.host} port:  ${serverInput.port}   instance Nr: ${instance + 1}\n');
     return serverInfo;
   }
 
-  Future<bool> _parseRequest(HttpRequest httpRequest) async {
+  Future<bool> _handleRequest(HttpRequest httpRequest) async {
     if (httpRequest.headers.value('Upgrade') == null) {
       return handleHttpRequest(httpRequest);
     } else if (httpRequest.headers.value("Upgrade") != null &&
         httpRequest.headers.value("Upgrade") == "websocket") {
       if (WebSocketTransformer.isUpgradeRequest(httpRequest)) {
-        if (application.socketIOServer) {
+        if (serverInput.useSocketIO) {
           httpServerStream.sink.add(httpRequest);
-        } else if (application.webSocket) {
-          WebSocketTransformer.upgrade(httpRequest).then((WebSocket websocket) {
-            UpgradedWebSocket upgradedWebSocket = UpgradedWebSocket(
-                websocket, httpRequest.headers, httpRequest.uri);
-            _webSocketStream.sink.add(upgradedWebSocket);
-            _webSocketStreamBroadcast.sink.add(upgradedWebSocket);
-          });
+        } else if (serverInput.useWebSocket) {
+          return handleHttpRequest(httpRequest);
         }
       }
       return true;
@@ -132,9 +127,9 @@ class Server {
       return true;
     }
     Request request = await BodyParser.parseBody(httpRequest, {});
-    Response response = Response(httpRequest.response, application, method);
-    if (application.corsOptions != null) {
-      var corsCallback = cors(application.corsOptions!);
+    Response response = Response(httpRequest.response, templateRender, method);
+    if (serverInput.corsOptions != null) {
+      var corsCallback = cors(serverInput.corsOptions!);
       final isOptionsMethod = await corsCallback(request, response);
 
       if (isOptionsMethod is Stop) {
@@ -145,7 +140,7 @@ class Server {
         return true;
       }
     }
-    for (MiddlewareHandler middlewareHandler in application.middlewares) {
+    for (MiddlewareHandler middlewareHandler in serverInput.middlewares) {
       final isOptionsMethod = await middlewareHandler(request, response);
 
       if (isOptionsMethod is Stop) {
@@ -158,17 +153,18 @@ class Server {
         return true;
       }
     }
-    List<Route> matchedPaths =
-        RoutesHandler.getMatchedRoutes(registredRoutes, path);
+    List<ARoute> matchedPaths =
+        RoutesHandler.getMatchedRoutes(registeredRoutes, path);
+
     if (matchedPaths.isNotEmpty) {
-      for (Route route in matchedPaths) {
+      for (ARoute route in matchedPaths) {
         if (route.requestMethod.requestMethod == method) {
           Map<String, dynamic> pathParams = RoutesHandler.pathMatcher(
               routePath: route.path, matchesPath: path);
           request.pathParams = pathParams;
           List<MiddlewareHandler> middlewares = route.middlewares;
           for (MiddlewareHandler middlewareHandler in middlewares) {
-            final AMiddleWareResponse middleWareResponse =
+            final MiddleWare middleWareResponse =
                 await middlewareHandler(request, response);
 
             if (middleWareResponse is Stop) {
@@ -180,10 +176,29 @@ class Server {
               return true;
             }
           }
-
-          Response sentResponse = await route.requestHandler(request, response);
-          if (!sentResponse.isClosed) {
-            sentResponse.write();
+          if (route is WebsocketRoute &&
+              route.path == path &&
+              path.endsWith("/ws") &&
+              route.requestMethod.requestMethod ==
+                  RequestMethod.get().requestMethod) {
+            if (httpRequest.headers.value("Upgrade") != null &&
+                httpRequest.headers.value("Upgrade") == "websocket") {
+              if (WebSocketTransformer.isUpgradeRequest(httpRequest)) {
+                WebSocketTransformer.upgrade(httpRequest)
+                    .then((WebSocket websocket) async {
+                  await route.webSocketHandler(
+                      serverContext,
+                      UpgradedWebSocket(
+                          websocket, httpRequest.headers, httpRequest.uri));
+                });
+              }
+            }
+          } else if (route is Route) {
+            Response sentResponse =
+                await route.requestHandler(serverContext, request, response);
+            if (!sentResponse.isClosed) {
+              sentResponse.write();
+            }
           }
 
           return true;
@@ -197,26 +212,46 @@ class Server {
     }
   }
 
-  // final List<RestControllerRoutesMapping> _registredRoutes = [];
-  final List<Route> registredRoutes = [];
+  final List<ARoute> registeredRoutes = [];
 
-  void _registerRoutes() {
-    registredRoutes.addAll(application.routes);
-    for (Router router in application.routers) {
-      for (Route route in router.routes) {
+  Future _registerRoutes() async {
+    registeredRoutes.addAll(serverInput.routes);
+    for (Router router in serverInput.routers) {
+      if (router._initState != null) {
+        await router._initState!.call(serverContext);
+      }
+      for (ARoute route in router.routes) {
         String composedPath = router.routerPath + route.path;
         List<MiddlewareHandler> middlewareHandlers = [
           ...router.middlewareHandlers,
           ...route.middlewares
         ];
-        registredRoutes.add(Route(
-            requestMethod: route.requestMethod,
-            path: composedPath,
-            requestHandler: route.requestHandler,
-            middlewares: middlewareHandlers));
+        if (route is Route) {
+          registeredRoutes.add(Route(
+              requestMethod: route.requestMethod,
+              path: composedPath,
+              requestHandler: route.requestHandler,
+              middlewares: middlewareHandlers));
+        } else if (route is WebsocketRoute) {
+          registeredRoutes.add(WebsocketRoute(
+              requestMethod: route.requestMethod,
+              path: composedPath,
+              webSocketHandler: route.webSocketHandler,
+              middlewares: middlewareHandlers));
+        }
       }
     }
   }
 
+  Future<void> dispose() async {
+    await httpServer.close();
+  }
+
   void _unawaited(Future then) {}
+}
+
+class ServerConfig {
+  final int port = 80;
+  final String host = "0.0.0.0";
+// ...
 }

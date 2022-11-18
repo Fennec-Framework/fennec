@@ -10,6 +10,8 @@ class Router extends ARouter {
   }
 
   List<MiddlewareHandler> middlewareHandlers = [];
+  RouterInitState? _initState;
+
   Router useMiddleware(MiddlewareHandler middlewareHandler) {
     middlewareHandlers.add(middlewareHandler);
     return this;
@@ -20,8 +22,15 @@ class Router extends ARouter {
     return this;
   }
 
-  final List<Route> _routes = [];
-  List<Route> get routes => _routes;
+  final List<ARoute> _routes = [];
+
+  List<ARoute> get routes => _routes;
+
+  Router routerInitState({required RouterInitState routerInitState}) {
+    _initState = routerInitState;
+    return this;
+  }
+
   Router post(
       {required String path,
       required RequestHandler requestHandler,
@@ -90,6 +99,18 @@ class Router extends ARouter {
         requestMethod: RequestMethod.patch(),
         path: path,
         requestHandler: requestHandler,
+        middlewares: middlewares));
+    return this;
+  }
+
+  Router ws(
+      {required String path,
+      required WebsocketHandler websocketHandler,
+      List<MiddlewareHandler> middlewares = const []}) {
+    _routes.add(WebsocketRoute(
+        requestMethod: RequestMethod.get(),
+        path: path,
+        webSocketHandler: websocketHandler,
         middlewares: middlewares));
     return this;
   }

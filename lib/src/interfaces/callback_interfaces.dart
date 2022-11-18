@@ -5,13 +5,19 @@ part of fennec;
 /// [res] is a [Response] that is the response.
 ///
 /// returns [FutureOr] of [void].
-typedef RequestHandler = FutureOr<Response> Function(Request req, Response res);
+typedef RequestHandler = FutureOr<Response> Function(
+    ServerContext serverContext, Request req, Response res);
+typedef WebsocketHandler = FutureOr<void> Function(
+    ServerContext serverContext, UpgradedWebSocket upgradedWebSocket);
+
+typedef RouterInitState = FutureOr<dynamic> Function(
+    ServerContext serverContext);
 
 /// [MiddlewareHandler] is a [typedef].
 /// [req] is a [Request] that is the request.
 /// [res] is a [Response] that is the response.
 /// returns [FutureOr] of [Next].
-typedef MiddlewareHandler = FutureOr<AMiddleWareResponse> Function(
+typedef MiddlewareHandler = FutureOr<MiddleWare> Function(
     Request req, Response res);
 
 /// [RouteNotFoundException] is a [typedef].
@@ -37,3 +43,5 @@ typedef EngineHandler = Function(String filePath, Map<String, dynamic>? locals,
 /// [authenticationProvider] is a [AuthenticationProvider] that is the authentication provider.
 typedef MiddleWareRequestByLoadUser = FutureOr<UserDetails?> Function(
     Request req, Response res, AuthenticationProvider authenticationProvider);
+
+typedef IsolateMessageHandler<T> = FutureOr<void> Function(T message);

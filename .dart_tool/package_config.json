@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "lints",
-      "rootUri": "file:///Users/akramchorfi/.pub-cache/hosted/pub.dartlang.org/lints-2.0.0",
+      "rootUri": "file:///Users/akramchorfi/.pub-cache/hosted/pub.dartlang.org/lints-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -26,7 +26,7 @@
       "languageVersion": "2.16"
     }
   ],
-  "generated": "2022-09-10T12:44:30.381391Z",
+  "generated": "2022-11-16T16:55:41.319922Z",
   "generator": "pub",
-  "generatorVersion": "2.17.6"
+  "generatorVersion": "2.18.2"
 }

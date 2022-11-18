@@ -1,6 +1,6 @@
 part of fennec;
 
-FutureOr<AMiddleWareResponse> Function(Request request, Response response) cors(
+FutureOr<MiddleWare> Function(Request request, Response response) cors(
     CorsOptions corsOptions) {
   return (Request req, Response res) {
     res.headers.add('Access-Control-Allow-Origin', corsOptions.origin);

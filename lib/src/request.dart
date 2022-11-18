@@ -20,7 +20,7 @@ class Request {
 
   /// [pathParams] is a [Map] that contains the path params of the request.
   /// It's used to get the path params of the request.
-  /// bydefault it's null.
+  /// by-default it's null.
   Map<String, dynamic> pathParams = {};
 
   /// [additionalData] is a [Map] that contains the additional data of the request.
@@ -29,7 +29,6 @@ class Request {
 
   /// [userDetails] is a [UserDetails] that contains the user details of the request.
   UserDetails? userDetails;
-
   /// [Request] is a constructor that creates a new [Request] object.
   Request(
     this.httpRequest,

@@ -52,15 +52,37 @@ class AuthorizatedRoute extends ARoute {
 */
 part of fennec;
 
-class Route {
+abstract class ARoute {
   final RequestMethod requestMethod;
   final String path;
-  final RequestHandler requestHandler;
   final List<MiddlewareHandler> middlewares;
 
-  Route(
+  ARoute(
       {required this.requestMethod,
       required this.path,
-      required this.requestHandler,
       this.middlewares = const []});
+}
+
+class Route extends ARoute {
+  final RequestHandler requestHandler;
+
+  Route(
+      {required RequestMethod requestMethod,
+      required String path,
+      required this.requestHandler,
+      List<MiddlewareHandler> middlewares = const []})
+      : super(
+            requestMethod: requestMethod, path: path, middlewares: middlewares);
+}
+
+class WebsocketRoute extends ARoute {
+  final WebsocketHandler webSocketHandler;
+
+  WebsocketRoute(
+      {required RequestMethod requestMethod,
+      required String path,
+      required this.webSocketHandler,
+      List<MiddlewareHandler> middlewares = const []})
+      : super(
+            requestMethod: requestMethod, path: path, middlewares: middlewares);
 }

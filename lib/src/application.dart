@@ -9,11 +9,12 @@ class Application {
   final Map<String, Engine> _engines = {};
 
   CorsOptions? corsOptions;
-
   final List<MiddlewareHandler> middlewares = [];
 
   /// instance of [Application] that contains the application.
   static final Application _instance = Application._internal();
+  final List<IsolateSupervisor> _supervisors = [];
+  final List<Actor> _actors = [];
 
   /// [Application] is a constructor that creates a new [Application] object.
   factory Application() {
@@ -87,7 +88,7 @@ class Application {
   int numberOfIsolates = 1;
 
   final List<Router> routers = [];
-  final List<Route> routes = [];
+  final List<ARoute> routes = [];
 
   /// [addRouter] is a method that adds a new Router to the application.
   /// [router] is a [Router] that contains the router.
@@ -96,10 +97,23 @@ class Application {
     return this;
   }
 
+  /// [addRouters] is a method that adds a List Router to the application.
+  /// [routers] is a List Router that contains the router.
+  Application addRouters(List<Router> routers) {
+    this.routers.addAll(routers);
+    return this;
+  }
+
   /// [addRoute] is a method that adds a new Route to the application.
   /// [route] is a [Route] that contains the route.
-  Application addRoute(Route route) {
+  Application addRoute(ARoute route) {
     routes.add(route);
+    return this;
+  }
+
+  /// [addRoutes] is a method that adds a a List of Route to the application.
+  Application addRoutes(List<ARoute> routes) {
+    this.routes.addAll(routes);
     return this;
   }
 
@@ -114,6 +128,16 @@ class Application {
   /// by default it's set to '0.0.0.0'.
   Application setHost(dynamic host) {
     this.host = host;
+    return this;
+  }
+
+  Application addActor(Actor actor) {
+    _actors.add(actor);
+    return this;
+  }
+
+  Application addActors(List<Actor> actors) {
+    _actors.addAll(actors);
     return this;
   }
 
@@ -242,5 +266,79 @@ class Application {
         requestHandler: requestHandler,
         middlewares: middlewares));
     return this;
+  }
+
+  Application ws(
+      {required String path,
+      required WebsocketHandler websocketHandler,
+      List<MiddlewareHandler> middlewares = const []}) {
+    addRoute(WebsocketRoute(
+        requestMethod: RequestMethod.get(),
+        path: path,
+        webSocketHandler: websocketHandler,
+        middlewares: middlewares));
+    return this;
+  }
+
+  Future<ServerInfo> runServer() async {
+    Actors actors = Actors(_actors);
+
+    await actors.initState();
+
+    var actorContainers = ActorContainers(actors.actorContainers);
+    _supervisors.addAll(
+        List.generate(numberOfIsolates, (index) => IsolateSupervisor()));
+
+    await Future.wait(List.generate(
+        _supervisors.length, (index) => _supervisors[index].initState()));
+    final TemplateRender templateRender = TemplateRender(_instance.cache);
+    final ServerInput serverInput = ServerInput(
+        _instance.port,
+        _instance.host,
+        _instance.routers,
+        _instance.routes,
+        _instance.middlewares,
+        _instance.webSocket,
+        _instance.socketIOServer,
+        corsOptions: _instance.corsOptions,
+        securityContext: _instance.securityContext);
+    ServerContext serverContext = ServerContext(actorContainers);
+    ServerInfo? serverInfo;
+
+    for (var i = 0; i < _supervisors.length; i++) {
+      IsolateError? error;
+
+      var subscription = _supervisors[i].errors.listen((event) {
+        error ??= event;
+      });
+      var subscriptionServerInfo = _supervisors[i].serverInfo.listen((event) {
+        serverInfo ??= event.serverInfo;
+      });
+
+      templateRender.rootPath = _instance.viewPath;
+      await _supervisors[i].start(ServerTaskHandler(
+          i, true, templateRender, serverInput, serverContext));
+
+      subscription.cancel();
+      subscriptionServerInfo.cancel();
+
+      if (error != null) {
+        throw Exception(
+            'an error occurred in the server instance: $i.\n\nInstance error:\n\n${error!.error}\n\nInstance stack trace:\n\n${error!.stackTrace}');
+      }
+    }
+    return serverInfo!;
+  }
+
+  Future<void> pause() async {
+    await Future.wait(_supervisors.map((e) => e.pause()));
+  }
+
+  Future<void> resume() async {
+    await Future.wait(_supervisors.map((e) => e.resume()));
+  }
+
+  Future<void> dispose() async {
+    await Future.wait(_supervisors.map((e) => e.dispose()));
   }
 }

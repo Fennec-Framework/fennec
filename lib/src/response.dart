@@ -6,8 +6,8 @@ class Response {
   /// [_response] is a [HttpResponse] that contains the http response of the server.
   final HttpResponse _response;
 
-  /// [_application] is a [Application] that contains the application of the server.
-  final Application _application;
+  /// [templateRender] is a [Application] that contains the application of the server.
+  final TemplateRender templateRender;
   Object? _body;
   bool isClosed = false;
 
@@ -15,7 +15,7 @@ class Response {
   final String method;
 
   /// constructor that creates a new [Response] object.
-  Response(this._response, this._application, this.method);
+  Response(this._response, this.templateRender, this.method);
 
   Response html() {
     headers.contentType = ContentType.html;
@@ -56,7 +56,7 @@ class Response {
       badRequestException(
           _response, 'Only GET method is allowed to render html templates');
     }
-    _application.render(viewName, locals, (err, data) {
+    templateRender.render(viewName, locals, (err, data) {
       if (err != null) {
         _response
           ..statusCode = HttpStatus.badRequest
@@ -76,17 +76,18 @@ class Response {
     close();
   }
 
-  void renderHtmlAsString(String htmlInput,
+  Response renderHtmlAsString(String htmlInput,
       {Map<String, dynamic> parameters = const {}}) {
     if (method.toUpperCase() != 'GET') {
       badRequestException(
           _response, 'Only GET method is allowed to render html templates');
-      return;
+      return this;
     }
     var data =
-        _application.renderHtmlAsString(htmlInput, parameters: parameters);
+        templateRender.renderHtmlAsString(htmlInput, parameters: parameters);
     _body = data;
     headers.contentType = ContentType.html;
+    return this;
   }
 
   /*/// [html] is a method that sends the response as html.

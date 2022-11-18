@@ -7,7 +7,7 @@ class UpgradedWebSocket {
   WebSocket webSocket;
 
   /// [headers] is a [HttpHeaders] that contains the headers of the websocket.
-  /// bydefault it's null.
+  /// by default it's null.
   HttpHeaders? headers;
 
   /// [uri] is a [Uri] that contains the uri of the websocket.
