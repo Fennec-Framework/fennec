@@ -1,5 +1,8 @@
 ## 2.0.7
 
+- improve files format.
+## 2.0.7
+
 - improve docs.
 
 ## 2.0.6
