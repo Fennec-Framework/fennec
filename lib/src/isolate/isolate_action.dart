@@ -1,4 +1,5 @@
 part of fennec;
+
 abstract class IsolateAction {}
 
 class IsolateStart extends IsolateAction {

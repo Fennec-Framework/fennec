@@ -81,7 +81,7 @@ class IsolateSupervisor {
   static void _isolateEntryPoint(IsolateSpawnMessage message) {
     var handler = IsolateHandler(message.supervisorPort);
 
-    handler.initialize();
+    handler.initState();
   }
 
   void send(dynamic message) {

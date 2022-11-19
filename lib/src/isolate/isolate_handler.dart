@@ -14,7 +14,7 @@ class IsolateHandler {
 
   IsolateHandler(SendPort supervisorPort) : _supervisorPort = supervisorPort;
 
-  void initialize() {
+  void initState() {
     _receiveStream = _receivePort.asBroadcastStream();
 
     _receiveStream.listen((message) {

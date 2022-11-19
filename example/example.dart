@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:fennec/fennec.dart';
@@ -6,10 +7,11 @@ import 'package:path/path.dart' as path;
 void main(List<String> arguments) async {
   Application application = Application();
 
-  application.setNumberOfIsolates(1);
+  application.setNumberOfIsolates(6);
   application.useWebSocket(true);
   application.setPort(8000);
   application.addRouters([testRouter()]);
+  application.addActor(CustomisedActor("customizedActor"));
   application.setViewPath(path.current + '/example');
 
   ServerInfo serverInfo = await application.runServer();
@@ -35,7 +37,11 @@ Router testRouter() {
   });
   router.get(
       path: "/test/{id}",
-      requestHandler: (context, req, res) {
+      requestHandler: (context, req, res) async {
+        context.actorContainers['customizedActor']!.execute("insert");
+        CustomisedActor customisedActor =
+            await context.actorContainers['customizedActor']!.getInstance();
+        print(customisedActor.get("get"));
         return res.ok(body: {"id": req.pathParams['id']}).json();
       });
 
@@ -65,4 +71,30 @@ Router testRouter() {
       });
 
   return router;
+}
+
+class CustomisedActor extends Actor {
+  final List<String> _strings = [];
+
+  CustomisedActor(String name) : super(name);
+
+  @override
+  FutureOr<void> execute(String action,
+      {Map<String, dynamic> data = const {}}) {
+    if (action == 'insert') {
+      _strings.add(" new item");
+    } else {
+      if (_strings.isNotEmpty) {
+        _strings.removeLast();
+      }
+    }
+  }
+
+  @override
+  FutureOr get(String action, {Map<String, dynamic> data = const {}}) {
+    if (action == "get") {
+      return _strings;
+    }
+    return null;
+  }
 }

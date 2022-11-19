@@ -18,7 +18,7 @@ typedef RouterInitState = FutureOr<dynamic> Function(
 /// [res] is a [Response] that is the response.
 /// returns [FutureOr] of [Next].
 typedef MiddlewareHandler = FutureOr<Middleware> Function(
-    ServerContext serverContext,Request req, Response res);
+    ServerContext serverContext, Request req, Response res);
 
 /// [RouteNotFoundException] is a [typedef].
 /// [response] is a [Response] that is the response.

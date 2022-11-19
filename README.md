@@ -21,12 +21,13 @@
 # supported features by fennec:
 
 1. Multi-threaded http request.
-2. WebSocket request.
-3. Handling requests with a simple and solid Router logic.
-4. Handling dynamic path routes.
-5. Middlewares at level of every request and Router level.
-6. Templates rendering system with html extension.
-7. Handling Form Data.
+2. Sharing Data between Isolates if using multiples Isolates.
+3. WebSocket request.
+4. Handling requests with a simple and solid Router logic.
+5. Handling dynamic path routes.
+6. Middlewares at level of every request and Router level.
+7. Templates rendering system with html extension.
+8. Handling Form Data.
 
 # make your first request:
 
@@ -84,14 +85,58 @@ return Stop(res.forbidden(body: {"error": "not allowed"}).json());
 
 ```
 
+## Sharing Data between Isolates if using multiples Isolates.
+
+Isolate is an isolated environment, inside which there is memory allocated to it and its EventLoop. but sometimes you want to share Data between Isolates or have the same Data content on all Isolates.
+
+Fennec let you do that by using Actor Concept.
+
+first you need to create your Actor customized class that is a subclass of Actor.
+
+example how to implement it.
+```dart
+
+class CustomisedActor extends Actor {
+final List<String> _strings = [];
+
+CustomisedActor(String name) : super(name);
+
+@override
+FutureOr<void> execute(String action,
+{Map<String, dynamic> data = const {}}) {
+if (action == 'insert') {
+_strings.add(" new item");
+} else {
+if (_strings.isNotEmpty) {
+_strings.removeLast();
+}
+}
+}
+
+@override
+FutureOr get(String action, {Map<String, dynamic> data = const {}}) {
+if (action == "get") {
+return _strings;
+}
+return null;
+}
+}
+
+
+```
+
+after implementing of your needed subclasses of [Actor], you need just to add it/them to your [Application] by using addActor or addActors in [Application] instance.
+
+with [ServerContext] instance you can have access to your Actor/Actors by their name and you can call get and execute methods to return some Data from Actor or execute some operations.
+
+
 ## dynamic routes
 
 here is an example how to use dynamic path routes
 
 ```dart
 router.get(path: "
-/
-test/{id}
+/test/{id}
 "
 ,
 requestHandler: (
@@ -107,8 +152,9 @@ an example how to handle files
 
 ```dart
 router.get(path: "
-/
-getFile",
+/getFile
+"
+,
 requestHandler: (
 context, req, res) {
 return res.ok(body: req.files.first.filename);
@@ -119,15 +165,17 @@ return res.ok(body: req.files.first.filename);
 ## Template with html extension
 
 you can render also html templates with fennec Framework. you need to determine the path for your
-html files.
-application.setViewPath(path.current + '/example');
+html files. application.setViewPath(path.current + '/example');
 
 an example how to use it.
 
 ```dart
 
 router.get(path: "
-/template",requestHandler: (
+/template
+"
+,
+requestHandler: (
 context, req, res) {
 return res.render("file");
 });
@@ -142,7 +190,10 @@ make the useWebSocket object at [Application] instance true.
 how to use it :
 
 ```dart
-  router.ws(path: "/connect",
+  router.ws(path: "
+/connect
+"
+,
 websocketHandler: (
 context, websocket) {
 /// handle new connected websocket client.
@@ -207,8 +258,9 @@ Thunderbolt 3 ports), we could gets this data:
 
 ```dart
   router.get(path: "
-/
-test",
+/test
+"
+,
 requestHandler: (
 context, req, res) async {
 return res.ok(body: "hello world");

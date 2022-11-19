@@ -29,6 +29,7 @@ class Request {
 
   /// [userDetails] is a [UserDetails] that contains the user details of the request.
   UserDetails? userDetails;
+
   /// [Request] is a constructor that creates a new [Request] object.
   Request(
     this.httpRequest,
