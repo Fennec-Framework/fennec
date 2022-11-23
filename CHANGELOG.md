@@ -1,6 +1,11 @@
 ## 2.0.8
 
+- fix body-parser.
+
+## 2.0.8
+
 - improve files format.
+
 ## 2.0.7
 
 - improve docs.

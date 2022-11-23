@@ -35,6 +35,12 @@ Router testRouter() {
     }
     return Stop(res.forbidden(body: {"error": "not allowed"}).json());
   });
+  router.ws(
+      path: "/connect",
+      websocketHandler: (context, websocket) {
+        /// handle new connected websocket client.
+      });
+
   router.get(
       path: "/test/{id}",
       requestHandler: (context, req, res) async {
@@ -57,10 +63,10 @@ Router testRouter() {
   router.get(
       path: "/file",
       requestHandler: (context, req, res) {
-        return res.ok(body: req.files.first.filename);
+        return res.ok(body: {'ss': 12}).text();
       });
   router.ws(
-      path: "/connect",
+      path: "/connect1",
       websocketHandler: (context, websocket) {
         /// handle new connected websocket client.
       });

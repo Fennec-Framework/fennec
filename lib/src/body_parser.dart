@@ -52,9 +52,6 @@ class BodyParser {
                 data: content[0]));
           }
         }
-      } else if (contentType.mimeType == 'application/json') {
-        var content = await utf8.decoder.bind(httpRequest).join();
-        body = content.isNotEmpty ? jsonDecode(content) : {};
       } else {
         var content = await utf8.decoder.bind(httpRequest).join();
         body = content;
