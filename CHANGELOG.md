@@ -1,3 +1,7 @@
+## 2.1.0
+
+- update WebSocket API.
+
 ## 2.0.9
 
 - fix body-parser.
