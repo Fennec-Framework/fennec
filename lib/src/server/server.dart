@@ -105,9 +105,7 @@ class Server {
     } else if (httpRequest.headers.value("Upgrade") != null &&
         httpRequest.headers.value("Upgrade") == "websocket") {
       if (WebSocketTransformer.isUpgradeRequest(httpRequest)) {
-        if (serverInput.useSocketIO) {
-          httpServerStream.sink.add(httpRequest);
-        } else if (serverInput.useWebSocket) {
+        if (serverInput.useWebSocket) {
           return handleHttpRequest(httpRequest);
         }
       }
@@ -184,13 +182,8 @@ class Server {
             if (httpRequest.headers.value("Upgrade") != null &&
                 httpRequest.headers.value("Upgrade") == "websocket") {
               if (WebSocketTransformer.isUpgradeRequest(httpRequest)) {
-                WebSocketTransformer.upgrade(httpRequest)
-                    .then((WebSocket websocket) async {
-                  await route.webSocketHandler(
-                      serverContext,
-                      UpgradedWebSocket(
-                          websocket, httpRequest.headers, httpRequest.uri));
-                });
+                await route.webSocketHandler(
+                    serverContext, request.httpRequest);
               }
             }
           } else if (route is Route) {

@@ -174,6 +174,7 @@ class Application {
     return this;
   }
 
+  @Deprecated("use Websocket for WS and SocketIO Server also")
   Application useSocketIOServer(bool useSocketIOServer) {
     socketIOServer = useSocketIOServer;
     return this;

@@ -8,7 +8,7 @@ part of fennec;
 typedef RequestHandler = FutureOr<Response> Function(
     ServerContext serverContext, Request req, Response res);
 typedef WebsocketHandler = FutureOr<void> Function(
-    ServerContext serverContext, UpgradedWebSocket upgradedWebSocket);
+    ServerContext serverContext, HttpRequest request);
 
 typedef RouterInitState = FutureOr<dynamic> Function(
     ServerContext serverContext);
