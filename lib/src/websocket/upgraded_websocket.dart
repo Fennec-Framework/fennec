@@ -15,4 +15,11 @@ class UpgradedWebSocket {
 
   /// [UpgradedWebSocket] is a constructor that creates a new [UpgradedWebSocket] object.
   UpgradedWebSocket(this.webSocket, this.headers, this.uri);
+
+  Future<UpgradedWebSocket> transform(HttpRequest request) async {
+    return WebSocketTransformer.upgrade(request)
+        .then((WebSocket websocket) async {
+      return UpgradedWebSocket(websocket, request.headers, request.uri);
+    });
+  }
 }
