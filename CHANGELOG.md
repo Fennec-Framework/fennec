@@ -1,3 +1,6 @@
+## 2.1.1
+
+- add SocketIOHandler and Route.
 ## 2.1.0
 
 - update WebSocket API.

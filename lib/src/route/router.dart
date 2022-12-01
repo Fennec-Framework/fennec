@@ -114,4 +114,15 @@ class Router extends ARouter {
         middlewares: middlewares));
     return this;
   }
+
+  Router socketIO(
+      {required SocketIOHandler socketIOHandler,
+      List<MiddlewareHandler> middlewares = const []}) {
+    _routes.add(WebsocketRoute(
+        requestMethod: RequestMethod.get(),
+        path: "/socket.io/",
+        webSocketHandler: socketIOHandler,
+        middlewares: middlewares));
+    return this;
+  }
 }

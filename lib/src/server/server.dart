@@ -126,6 +126,7 @@ class Server {
     }
     Request request = await BodyParser.parseBody(httpRequest, {});
     Response response = Response(httpRequest.response, templateRender, method);
+
     if (serverInput.corsOptions != null) {
       var corsCallback = cors(serverInput.corsOptions!);
       final isOptionsMethod = await corsCallback(request, response);
@@ -154,7 +155,6 @@ class Server {
     }
     List<ARoute> matchedPaths =
         RoutesHandler.getMatchedRoutes(registeredRoutes, path);
-
     if (matchedPaths.isNotEmpty) {
       for (ARoute route in matchedPaths) {
         if (route.requestMethod.requestMethod == method) {
@@ -175,6 +175,7 @@ class Server {
               return true;
             }
           }
+
           if (route is WebsocketRoute &&
               route.path == path &&
               route.requestMethod.requestMethod ==

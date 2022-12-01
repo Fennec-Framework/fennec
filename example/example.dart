@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 void main(List<String> arguments) async {
   Application application = Application();
 
-  application.setNumberOfIsolates(6);
+  application.setNumberOfIsolates(1);
   application.useWebSocket(true);
   application.setPort(8000);
   application.addRouters([testRouter()]);
@@ -35,11 +35,11 @@ Router testRouter() {
     }
     return Stop(res.forbidden(body: {"error": "not allowed"}).json());
   });
-  router.ws(
-      path: "/connect",
-      websocketHandler: (context, websocket) {
-        /// handle new connected websocket client.
-      });
+  router.socketIO(socketIOHandler: (context, websocket) {
+    print('aa');
+
+    /// handle new connected websocket client.
+  });
 
   router.get(
       path: "/test/{id}",

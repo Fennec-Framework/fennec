@@ -281,6 +281,17 @@ class Application {
     return this;
   }
 
+  Application socketIO(
+      {required SocketIOHandler socketIOHandler,
+      List<MiddlewareHandler> middlewares = const []}) {
+    addRoute(WebsocketRoute(
+        requestMethod: RequestMethod.get(),
+        path: "/socket.io/",
+        webSocketHandler: socketIOHandler,
+        middlewares: middlewares));
+    return this;
+  }
+
   Future<ServerInfo> runServer() async {
     Actors actors = Actors(_actors);
 
