@@ -283,10 +283,11 @@ class Application {
 
   Application socketIO(
       {required SocketIOHandler socketIOHandler,
-      List<MiddlewareHandler> middlewares = const []}) {
+      List<MiddlewareHandler> middlewares = const [],
+      String path = '/socket.io/'}) {
     addRoute(WebsocketRoute(
         requestMethod: RequestMethod.get(),
-        path: "/socket.io/",
+        path: path,
         webSocketHandler: socketIOHandler,
         middlewares: middlewares));
     return this;

@@ -1,3 +1,6 @@
+## 2.1.2
+
+- add custom path for SocketIO.
 ## 2.1.1
 
 - add SocketIOHandler and Route.

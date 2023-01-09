@@ -35,11 +35,13 @@ Router testRouter() {
     }
     return Stop(res.forbidden(body: {"error": "not allowed"}).json());
   });
-  router.socketIO(socketIOHandler: (context, websocket) {
-    print('aa');
+  router.socketIO(
+      socketIOHandler: (context, websocket) {
+        print('Socket is coming');
 
-    /// handle new connected websocket client.
-  });
+        /// handle new connected websocket client.
+      },
+      path: "/socket.io/");
 
   router.get(
       path: "/test/{id}",

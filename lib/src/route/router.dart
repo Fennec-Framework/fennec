@@ -117,10 +117,11 @@ class Router extends ARouter {
 
   Router socketIO(
       {required SocketIOHandler socketIOHandler,
-      List<MiddlewareHandler> middlewares = const []}) {
+      List<MiddlewareHandler> middlewares = const [],
+      String path = '/socket.io/'}) {
     _routes.add(WebsocketRoute(
         requestMethod: RequestMethod.get(),
-        path: "/socket.io/",
+        path: path,
         webSocketHandler: socketIOHandler,
         middlewares: middlewares));
     return this;
