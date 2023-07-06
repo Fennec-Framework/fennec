@@ -25,4 +25,12 @@ class RequestMethod {
 
   /// [get] is a constructor that creates a new [RequestMethod] object with the request method set to [GET].
   const RequestMethod.get() : this('GET');
+
+  /// [all] is a constructor that creates a new [RequestMethod] object with the request method set to [all].
+  const RequestMethod.all() : this('*');
+
+  @override
+  String toString() {
+    return requestMethod;
+  }
 }

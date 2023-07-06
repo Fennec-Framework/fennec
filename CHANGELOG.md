@@ -1,3 +1,7 @@
+## 2.1.3
+
+- add multiples methods for request.
+
 ## 2.1.2
 
 - add custom path for SocketIO.

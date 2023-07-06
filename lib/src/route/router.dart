@@ -36,7 +36,7 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.post(),
+        requestMethods: [RequestMethod.post()],
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -48,7 +48,7 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.get(),
+        requestMethods: [RequestMethod.get()],
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -60,7 +60,7 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.delete(),
+        requestMethods: [RequestMethod.delete()],
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -72,7 +72,7 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.put(),
+        requestMethods: [RequestMethod.put()],
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -84,7 +84,7 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.options(),
+        requestMethods: [RequestMethod.options()],
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -96,7 +96,21 @@ class Router extends ARouter {
       required RequestHandler requestHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(Route(
-        requestMethod: RequestMethod.patch(),
+        requestMethods: [RequestMethod.patch()],
+        path: path,
+        requestHandler: requestHandler,
+        middlewares: middlewares));
+    return this;
+  }
+
+  Router any({
+    required String path,
+    required RequestHandler requestHandler,
+    List<MiddlewareHandler> middlewares = const [],
+    List<RequestMethod> requestMethods = const [RequestMethod.all()],
+  }) {
+    _routes.add(Route(
+        requestMethods: requestMethods,
         path: path,
         requestHandler: requestHandler,
         middlewares: middlewares));
@@ -108,7 +122,7 @@ class Router extends ARouter {
       required WebsocketHandler websocketHandler,
       List<MiddlewareHandler> middlewares = const []}) {
     _routes.add(WebsocketRoute(
-        requestMethod: RequestMethod.get(),
+        requestMethods: [RequestMethod.get()],
         path: path,
         webSocketHandler: websocketHandler,
         middlewares: middlewares));
@@ -120,7 +134,7 @@ class Router extends ARouter {
       List<MiddlewareHandler> middlewares = const [],
       String path = '/socket.io/'}) {
     _routes.add(WebsocketRoute(
-        requestMethod: RequestMethod.get(),
+        requestMethods: [RequestMethod.get()],
         path: path,
         webSocketHandler: socketIOHandler,
         middlewares: middlewares));

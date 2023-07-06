@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:fennec/fennec.dart';
 import 'package:path/path.dart' as path;
@@ -12,7 +11,7 @@ void main(List<String> arguments) async {
   application.setPort(8000);
   application.addRouters([testRouter()]);
   application.addActor(CustomisedActor("customizedActor"));
-  application.setViewPath(path.current + '/example');
+  application.setViewPath('${path.current}/example');
 
   ServerInfo serverInfo = await application.runServer();
   print("Server is running at Port ${serverInfo.port}");
@@ -35,6 +34,7 @@ Router testRouter() {
     }
     return Stop(res.forbidden(body: {"error": "not allowed"}).json());
   });
+
   router.socketIO(
       socketIOHandler: (context, websocket) {
         print('Socket is coming');
@@ -64,6 +64,12 @@ Router testRouter() {
       });
   router.get(
       path: "/file",
+      requestHandler: (context, req, res) {
+        return res.ok(body: {'ss': 12}).text();
+      });
+  router.any(
+      path: "/",
+      requestMethods: [RequestMethod.get(), RequestMethod.post()],
       requestHandler: (context, req, res) {
         return res.ok(body: {'ss': 12}).text();
       });

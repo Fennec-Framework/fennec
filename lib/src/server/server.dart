@@ -157,7 +157,10 @@ class Server {
         RoutesHandler.getMatchedRoutes(registeredRoutes, path);
     if (matchedPaths.isNotEmpty) {
       for (ARoute route in matchedPaths) {
-        if (route.requestMethod.requestMethod == method) {
+        if (route.requestMethods.indexWhere((element) =>
+                element.requestMethod == '*' ||
+                element.requestMethod == method) !=
+            -1) {
           Map<String, dynamic> pathParams = RoutesHandler.pathMatcher(
               routePath: route.path, matchesPath: path);
           request.pathParams = pathParams;
@@ -178,7 +181,7 @@ class Server {
 
           if (route is WebsocketRoute &&
               route.path == path &&
-              route.requestMethod.requestMethod ==
+              route.requestMethods.first.requestMethod ==
                   RequestMethod.get().requestMethod) {
             if (httpRequest.headers.value("Upgrade") != null &&
                 httpRequest.headers.value("Upgrade") == "websocket") {
@@ -222,13 +225,13 @@ class Server {
         ];
         if (route is Route) {
           registeredRoutes.add(Route(
-              requestMethod: route.requestMethod,
+              requestMethods: route.requestMethods,
               path: composedPath,
               requestHandler: route.requestHandler,
               middlewares: middlewareHandlers));
         } else if (route is WebsocketRoute) {
           registeredRoutes.add(WebsocketRoute(
-              requestMethod: route.requestMethod,
+              requestMethods: route.requestMethods,
               path: composedPath,
               webSocketHandler: route.webSocketHandler,
               middlewares: middlewareHandlers));

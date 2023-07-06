@@ -28,8 +28,9 @@ class RoutesHandler {
   static void checkRoutes(List<ARoute> routes) {
     List<String> existingRoutes = [];
     for (ARoute route in routes) {
-      String composed =
-          (route.path + route.requestMethod.requestMethod).toLowerCase();
+      var requestMethods = List<RequestMethod>.from(route.requestMethods);
+      requestMethods.sort((a, b) => a.requestMethod.compareTo(b.requestMethod));
+      String composed = (route.path + requestMethods.join(',')).toLowerCase();
       if (existingRoutes.contains(composed)) {
         throw Exception('you have multiples Routes with the same end point');
       } else {
@@ -47,6 +48,7 @@ class RoutesHandler {
   static List<ARoute> getMatchedRoutes(List<ARoute> routes, String path) {
     List<ARoute> matchedRoutes = [];
     List<String> pathComponents = path.split("/");
+
     for (ARoute route in routes) {
       List<String> routeComponents = route.path.split("/");
       bool checker = false;
